@@ -21,8 +21,12 @@ type MerchandiseSearchParams = {
   [key: string]: string;
 };
 
-// Note: Replace 'YOUR_PAYPAL_CLIENT_ID' with your actual PayPal client ID
-const paypalClientId = 'YOUR_PAYPAL_CLIENT_ID';
+// Ensure NEXT_PUBLIC_PAYPAL_CLIENT_ID is set in your environment variables
+const paypalClientId = process.env.PAYPAL_CLIENT_ID;
+
+if (process.env.NODE_ENV !== 'production' && !paypalClientId) {
+  throw new Error('PAYPAL_CLIENT_ID environment variable is not set.');
+}
 
 async function getProductsFromJson(): Promise<Product[]> {
   try {
@@ -70,8 +74,8 @@ export default function CartModal() {
   }, [isOpen, cart?.totalQuantity, quantityRef]);
 
   return (
-    <PayPalScriptProvider options={{ clientId: paypalClientId }}>
-      <button aria-label="Open cart" onClick={openCart}>
+    <PayPalScriptProvider options={{ clientId: paypalClientId as string }}>
+      <button aria-label="Open cart" onClick={openCart} className="hover:cursor-pointer">
         <OpenCart quantity={cart?.totalQuantity} />
       </button>
       <Transition show={isOpen}>
