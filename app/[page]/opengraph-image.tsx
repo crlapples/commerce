@@ -1,9 +1,14 @@
-import OpengraphImage from 'components/opengraph-image';
-import { getPage } from 'lib/shopify';
+import { ImageResponse } from 'next/og';
+// No import from 'lib/shopify'
 
-export default async function Image({ params }: { params: { page: string } }) {
-  const page = await getPage(params.page);
-  const title = page.seo?.title || page.title;
+export const runtime = 'edge';
 
-  return await OpengraphImage({ title });
+export default async function OpengraphImage() {
+  return new ImageResponse(
+    (
+      // ... generate a simpler image, perhaps just your logo
+      <div>My Site Logo</div>
+    ),
+    // ... image options
+  );
 }

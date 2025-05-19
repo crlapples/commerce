@@ -1,26 +1,24 @@
 'use client';
 
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { removeItem } from 'components/cart/actions';
-import type { CartItem } from 'lib/shopify/types';
-import { useActionState } from 'react';
+import type { CartItem } from 'lib/types';
+import { useCart } from './cart-context';
 
 export function DeleteItemButton({
   item,
   optimisticUpdate
 }: {
-  item: CartItem;
+  item: CartItem; // Keep using the new CartItem type
   optimisticUpdate: any;
 }) {
-  const [message, formAction] = useActionState(removeItem, null);
-  const merchandiseId = item.merchandise.id;
-  const removeItemAction = formAction.bind(null, merchandiseId);
+  const { updateCartItem } = useCart();
+  const itemId = item.productId; // Use productId from the new CartItem type
 
   return (
     <form
-      action={async () => {
-        optimisticUpdate(merchandiseId, 'delete');
-        removeItemAction();
+      action={() => {
+        optimisticUpdate(itemId, 'delete'); // Use itemId
+        updateCartItem(itemId, 'delete'); // Call updateCartItem with itemId and 'delete'
       }}
     >
       <button
@@ -31,7 +29,7 @@ export function DeleteItemButton({
         <XMarkIcon className="mx-[1px] h-4 w-4 text-white dark:text-black" />
       </button>
       <p aria-live="polite" className="sr-only" role="status">
-        {message}
+        {item.productId}
       </p>
     </form>
   );

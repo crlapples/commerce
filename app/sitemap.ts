@@ -1,52 +1,39 @@
-import { getCollections, getPages, getProducts } from 'lib/shopify';
-import { baseUrl, validateEnvironmentVariables } from 'lib/utils';
 import { MetadataRoute } from 'next';
+import fs from 'fs/promises';
+import path from 'path';
+import { Product } from 'lib/types'; // Assuming you have a Product type
 
-type Route = {
-  url: string;
-  lastModified: string;
-};
+async function getProductsFromJson(): Promise<Product[]> {
+  const filePath = path.join(process.cwd(), 'lib', 'products.json');
+  const jsonData = await fs.readFile(filePath, 'utf-8');
+  return JSON.parse(jsonData);
+}
 
-export const dynamic = 'force-dynamic';
+// Assuming you have a way to get local collection slugs
+async function getCollectionSlugs(): Promise<string[]> {
+  // This is a placeholder - implement your logic to get collection slugs from your local data
+  return ['shirts', 'shoes'];
+}
+
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  validateEnvironmentVariables();
+  const products = await getProductsFromJson();
+  const collectionSlugs = await getCollectionSlugs();
 
-  const routesMap = [''].map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: new Date().toISOString()
+  const productEntries: MetadataRoute.Sitemap = products.map((product) => ({
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/product/${product.id}`, // Use product.id or a slug
+    lastModified: new Date() // Or a timestamp from your product data if available
   }));
 
-  const collectionsPromise = getCollections().then((collections) =>
-    collections.map((collection) => ({
-      url: `${baseUrl}${collection.path}`,
-      lastModified: collection.updatedAt
-    }))
-  );
+  const collectionEntries: MetadataRoute.Sitemap = collectionSlugs.map((slug) => ({
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}/search/${slug}`
+  }));
 
-  const productsPromise = getProducts({}).then((products) =>
-    products.map((product) => ({
-      url: `${baseUrl}/product/${product.handle}`,
-      lastModified: product.updatedAt
-    }))
-  );
 
-  const pagesPromise = getPages().then((pages) =>
-    pages.map((page) => ({
-      url: `${baseUrl}/${page.handle}`,
-      lastModified: page.updatedAt
-    }))
-  );
+  const routes = ['', '/search'].map((route) => ({
+    url: `${process.env.NEXT_PUBLIC_BASE_URL}${route}`,
+    lastModified: new Date()
+  }));
 
-  let fetchedRoutes: Route[] = [];
-
-  try {
-    fetchedRoutes = (
-      await Promise.all([collectionsPromise, productsPromise, pagesPromise])
-    ).flat();
-  } catch (error) {
-    throw JSON.stringify(error, null, 2);
-  }
-
-  return [...routesMap, ...fetchedRoutes];
+  return [...routes, ...productEntries, ...collectionEntries];
 }

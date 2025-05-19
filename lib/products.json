@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1",
+    "name": "Wireless Mouse",
+    "description": "Ergonomic wireless mouse with silent clicks.",
+    "price": "25.50",
+    "images": [
+      "/images/mouse-1.jpg",
+      "/images/mouse-2.jpg"
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Mechanical Keyboard",
+    "description": "RGB mechanical keyboard with clicky switches.",
+    "price": "89.99",
+    "images": [
+      "/images/keyboard-1.jpg",
+      "/images/keyboard-2.jpg"
+    ],
+    "variant": {
+      "color": "black"
+    }
+  },
+  {
+    "id": "3",
+    "name": "USB-C Hub",
+    "description": "Multi-port USB-C hub with HDMI and card reader.",
+    "price": "35.00",
+    "images": [
+      "/images/hub-1.jpg"
+    ],
+    "variant": {
+      "color": "white"
+    }
+  }
+]

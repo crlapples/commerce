@@ -2,10 +2,8 @@
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { addItem } from 'components/cart/actions';
 import { useProduct } from 'components/product/product-context';
-import { Product, ProductVariant } from 'lib/shopify/types';
-import { useActionState } from 'react';
+import { Product } from 'lib/types';
 import { useCart } from './cart-context';
 
 function SubmitButton({
@@ -58,37 +56,28 @@ function SubmitButton({
 }
 
 export function AddToCart({ product }: { product: Product }) {
-  const { variants, availableForSale } = product;
+  // Use product.variant directly if it exists, as per the simplified structure
   const { addCartItem } = useCart();
-  const { state } = useProduct();
-  const [message, formAction] = useActionState(addItem, null);
 
-  const variant = variants.find((variant: ProductVariant) =>
-    variant.selectedOptions.every(
-      (option) => option.value === state[option.name.toLowerCase()]
-    )
-  );
-  const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
-  const selectedVariantId = variant?.id || defaultVariantId;
-  const addItemAction = formAction.bind(null, selectedVariantId);
-  const finalVariant = variants.find(
-    (variant) => variant.id === selectedVariantId
-  )!;
+  // With the simplified product structure, the variant is directly on the product if it exists
+  const selectedVariant = product.variant;
+  const selectedVariantId = selectedVariant ? product.id : undefined; // Use product.id as the identifier if a variant exists
+  const isAvailableForSale = true; // Assume available for sale with the simplified structure
 
   return (
     <form
       action={async () => {
-        addCartItem(finalVariant, product);
-        addItemAction();
+        addCartItem(product, 1, selectedVariant); // Add product, quantity 1, and the selected variant
       }}
     >
       <SubmitButton
-        availableForSale={availableForSale}
+        availableForSale={isAvailableForSale}
         selectedVariantId={selectedVariantId}
       />
       <p aria-live="polite" className="sr-only" role="status">
-        {message}
+        {''}
       </p>
     </form>
   );
 }
+

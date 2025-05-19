@@ -3,6 +3,12 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { createContext, useContext, useMemo, useOptimistic } from 'react';
 
+export interface ProductVariant {
+  color: string;
+}
+
+
+
 type ProductState = {
   [key: string]: string;
 } & {

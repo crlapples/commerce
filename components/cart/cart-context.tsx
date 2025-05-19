@@ -1,11 +1,5 @@
 'use client';
 
-import type {
-  Cart,
-  CartItem,
-  Product,
-  ProductVariant
-} from 'lib/shopify/types';
 import React, {
   createContext,
   use,
@@ -13,177 +7,155 @@ import React, {
   useMemo,
   useOptimistic
 } from 'react';
+import { Cart, CartItem, Product } from 'lib/types'; // Assuming types are in lib/types.ts
 
 type UpdateType = 'plus' | 'minus' | 'delete';
 
 type CartAction =
   | {
       type: 'UPDATE_ITEM';
-      payload: { merchandiseId: string; updateType: UpdateType };
+      payload: { productId: string; updateType: UpdateType; variant?: CartItem['variant'] };
     }
   | {
       type: 'ADD_ITEM';
-      payload: { variant: ProductVariant; product: Product };
+      payload: { product: Product; quantity: number; variant?: CartItem['variant'] };
+    }
+  | {
+      type: 'CLEAR_CART';
     };
+
 
 type CartContextType = {
   cartPromise: Promise<Cart | undefined>;
+  updateCartItem: (productId: string, updateType: UpdateType, variant?: CartItem['variant']) => void;
+  addCartItem: (product: Product, quantity: number, variant?: CartItem['variant']) => void;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 function calculateItemCost(quantity: number, price: string): string {
-  return (Number(price) * quantity).toString();
+  const itemPrice = parseFloat(price);
+  if (isNaN(itemPrice)) {
+    console.error('Invalid price provided to calculateItemCost:', price);
+    return '0.00';
+  }
+  return (itemPrice * quantity).toFixed(2);
 }
 
 function updateCartItem(
   item: CartItem,
-  updateType: UpdateType
+  updateType: UpdateType,
+  variant?: CartItem['variant']
 ): CartItem | null {
-  if (updateType === 'delete') return null;
+  if (variant && JSON.stringify(item.variant) !== JSON.stringify(variant)) {
+    return item; // Only update items with matching variant
+  }
 
-  const newQuantity =
-    updateType === 'plus' ? item.quantity + 1 : item.quantity - 1;
-  if (newQuantity === 0) return null;
+  let newQuantity = item.quantity;
+  if (updateType === 'plus') {
+    newQuantity++;
+  } else if (updateType === 'minus') {
+    newQuantity--;
+  } else if (updateType === 'delete') {
+    return null; // Remove item
+  }
 
-  const singleItemAmount = Number(item.cost.totalAmount.amount) / item.quantity;
-  const newTotalAmount = calculateItemCost(
-    newQuantity,
-    singleItemAmount.toString()
-  );
+  if (newQuantity <= 0) return null; // Remove if quantity is zero or less
 
-  return {
-    ...item,
-    quantity: newQuantity,
-    cost: {
-      ...item.cost,
-      totalAmount: {
-        ...item.cost.totalAmount,
-        amount: newTotalAmount
-      }
-    }
-  };
+  return { ...item, quantity: newQuantity };
 }
 
 function createOrUpdateCartItem(
   existingItem: CartItem | undefined,
-  variant: ProductVariant,
-  product: Product
+  product: Product,
+  quantity: number,
+  variant?: CartItem['variant']
 ): CartItem {
-  const quantity = existingItem ? existingItem.quantity + 1 : 1;
-  const totalAmount = calculateItemCost(quantity, variant.price.amount);
-
-  return {
-    id: existingItem?.id,
-    quantity,
-    cost: {
-      totalAmount: {
-        amount: totalAmount,
-        currencyCode: variant.price.currencyCode
-      }
-    },
-    merchandise: {
-      id: variant.id,
-      title: variant.title,
-      selectedOptions: variant.selectedOptions,
-      product: {
-        id: product.id,
-        handle: product.handle,
-        title: product.title,
-        featuredImage: product.featuredImage
-      }
-    }
-  };
+  if (existingItem) {
+    return {
+      ...existingItem,
+      quantity: existingItem.quantity + quantity,
+    };
+  } else {
+    return {
+      productId: product.id,
+      quantity: quantity,
+      variant: variant,
+    };
+  }
 }
 
 function updateCartTotals(
-  lines: CartItem[]
-): Pick<Cart, 'totalQuantity' | 'cost'> {
-  const totalQuantity = lines.reduce((sum, item) => sum + item.quantity, 0);
-  const totalAmount = lines.reduce(
-    (sum, item) => sum + Number(item.cost.totalAmount.amount),
-    0
-  );
-  const currencyCode = lines[0]?.cost.totalAmount.currencyCode ?? 'USD';
+  items: CartItem[],
+  allProducts: Product[] // Need all products to calculate total price
+): Pick<Cart, 'totalQuantity' | 'totalPrice'> {
+  const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => {
+    const product = allProducts.find(p => p.id === item.productId);
+    if (!product) return sum;
+    const itemPrice = parseFloat(product.price);
+    if (isNaN(itemPrice)) return sum;
+    return sum + itemPrice * item.quantity;
+  }, 0).toFixed(2);
 
-  return {
-    totalQuantity,
-    cost: {
-      subtotalAmount: { amount: totalAmount.toString(), currencyCode },
-      totalAmount: { amount: totalAmount.toString(), currencyCode },
-      totalTaxAmount: { amount: '0', currencyCode }
-    }
-  };
+  return { totalQuantity, totalPrice };
 }
 
 function createEmptyCart(): Cart {
-  return {
-    id: undefined,
-    checkoutUrl: '',
-    totalQuantity: 0,
-    lines: [],
-    cost: {
-      subtotalAmount: { amount: '0', currencyCode: 'USD' },
-      totalAmount: { amount: '0', currencyCode: 'USD' },
-      totalTaxAmount: { amount: '0', currencyCode: 'USD' }
-    }
-  };
+  return { id: undefined, items: [], totalQuantity: 0, totalPrice: '0.00' };
 }
 
-function cartReducer(state: Cart | undefined, action: CartAction): Cart {
-  const currentCart = state || createEmptyCart();
+function cartReducer(state: Cart | undefined, action: CartAction): Cart { // allProducts is needed here too, but how to pass?
+  let currentCart = state || createEmptyCart();
 
   switch (action.type) {
     case 'UPDATE_ITEM': {
-      const { merchandiseId, updateType } = action.payload;
-      const updatedLines = currentCart.lines
+      const { productId, updateType, variant } = action.payload;
+      const updatedItems = currentCart.items
         .map((item) =>
-          item.merchandise.id === merchandiseId
-            ? updateCartItem(item, updateType)
+          item.productId === productId
+            ? updateCartItem(item, updateType, variant)
             : item
         )
         .filter(Boolean) as CartItem[];
 
-      if (updatedLines.length === 0) {
-        return {
-          ...currentCart,
-          lines: [],
-          totalQuantity: 0,
-          cost: {
-            ...currentCart.cost,
-            totalAmount: { ...currentCart.cost.totalAmount, amount: '0' }
-          }
-        };
-      }
-
-      return {
+      const nextCart = {
         ...currentCart,
-        ...updateCartTotals(updatedLines),
-        lines: updatedLines
+        items: updatedItems,
+        // Totals will be updated after the reducer in useCart
       };
+      localStorage.setItem('my-ecommerce-cart', JSON.stringify(nextCart));
+      return nextCart;
     }
     case 'ADD_ITEM': {
-      const { variant, product } = action.payload;
-      const existingItem = currentCart.lines.find(
-        (item) => item.merchandise.id === variant.id
+      const { product, quantity, variant } = action.payload;
+      const existingItem = currentCart.items.find(
+        (item) => item.productId === product.id && JSON.stringify(item.variant) === JSON.stringify(variant)
       );
       const updatedItem = createOrUpdateCartItem(
         existingItem,
-        variant,
-        product
+        product,
+        quantity,
+        variant
       );
 
-      const updatedLines = existingItem
-        ? currentCart.lines.map((item) =>
-            item.merchandise.id === variant.id ? updatedItem : item
+      const updatedItems = existingItem
+        ? currentCart.items.map((item) =>
+            item.productId === product.id && JSON.stringify(item.variant) === JSON.stringify(variant) ? updatedItem : item
           )
-        : [...currentCart.lines, updatedItem];
+        : [...currentCart.items, updatedItem];
 
-      return {
+      const nextCart = {
         ...currentCart,
-        ...updateCartTotals(updatedLines),
-        lines: updatedLines
+        items: updatedItems,
+        // Totals will be updated after the reducer in useCart
       };
+      localStorage.setItem('my-ecommerce-cart', JSON.stringify(nextCart));
+      return nextCart;
+    }
+    case 'CLEAR_CART': {
+      localStorage.removeItem('my-ecommerce-cart');
+      return createEmptyCart();
     }
     default:
       return currentCart;
@@ -197,8 +169,29 @@ export function CartProvider({
   children: React.ReactNode;
   cartPromise: Promise<Cart | undefined>;
 }) {
-  return (
-    <CartContext.Provider value={{ cartPromise }}>
+  
+  // OR, to be more explicit and handle potential parsing errors:
+  
+  let initialCart: Cart | undefined = undefined;
+  const initialCartFromStorage = typeof window !== 'undefined' ? localStorage.getItem('my-ecommerce-cart') : null;
+  
+  if (initialCartFromStorage) {
+    try {
+      initialCart = JSON.parse(initialCartFromStorage);
+    } catch (error) {
+      console.error('Error parsing cart data from localStorage:', error);
+      // Optionally, clear invalid data from localStorage
+      localStorage.removeItem('my-ecommerce-cart');
+    }
+  }  
+    const { updateCartItem, addCartItem } = useCart(); // <-- Get functions from useCart
+
+    return (
+    <CartContext.Provider value={{
+      cartPromise: Promise.resolve(initialCart),
+      updateCartItem, // <-- Include updateCartItem
+      addCartItem // <-- Include addCartItem
+      }}>
       {children}
     </CartContext.Provider>
   );
@@ -219,19 +212,24 @@ export function useCart() {
   const updateCartItem = (merchandiseId: string, updateType: UpdateType) => {
     updateOptimisticCart({
       type: 'UPDATE_ITEM',
-      payload: { merchandiseId, updateType }
+      payload: { productId: merchandiseId, updateType }
     });
   };
 
-  const addCartItem = (variant: ProductVariant, product: Product) => {
-    updateOptimisticCart({ type: 'ADD_ITEM', payload: { variant, product } });
+  const addCartItem = (product: Product, quantity: number, variant?: CartItem['variant']) => {
+    updateOptimisticCart({ type: 'ADD_ITEM', payload: { product, quantity, variant } });
+  };
+
+  const clearCart = () => {
+     updateOptimisticCart({ type: 'CLEAR_CART' });
   };
 
   return useMemo(
     () => ({
       cart: optimisticCart,
       updateCartItem,
-      addCartItem
+      addCartItem,
+      clearCart, // Export clearCart
     }),
     [optimisticCart]
   );

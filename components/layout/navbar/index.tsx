@@ -1,17 +1,25 @@
+'use client';
 import CartModal from 'components/cart/modal';
 import LogoSquare from 'components/logo-square';
-import { getMenu } from 'lib/shopify';
-import { Menu } from 'lib/shopify/types';
 import Link from 'next/link';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
+import { Menu } from 'lib/types';
 import MobileMenu from './mobile-menu';
 import Search, { SearchSkeleton } from './search';
 
 const { SITE_NAME } = process.env;
 
-export async function Navbar() {
-  const menu = await getMenu('next-js-frontend-header-menu');
+export function Navbar() {
+  const menu: Menu[] = [
+    { title: 'All', path: '/search' },
+    { title: 'Shirts', path: '/search/shirts' }
+  ];
 
+  const [isClient, setIsClient] = useState(false); // State to track if code is running on client
+
+  useEffect(() => {
+    setIsClient(true); // Set to true when component mounts on client
+  }, []);
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -53,7 +61,8 @@ export async function Navbar() {
           </Suspense>
         </div>
         <div className="flex justify-end md:w-1/3">
-          <CartModal />
+          {/* Temporarily commented out for debugging */}
+          {/* {isClient && <CartModal />} */}
         </div>
       </div>
     </nav>

@@ -20,6 +20,11 @@ export const ensureStartsWith = (stringToCheck: string, startsWith: string) =>
     : `${startsWith}${stringToCheck}`;
 
 export const validateEnvironmentVariables = () => {
+  // NOTE: this should eventually be replaced by a different mechanism
+  //       for validating environment variables specific to YOUR local setup
+  //       as the original check was for Shopify integration variables
+
+  /*
   const requiredEnvironmentVariables = [
     'SHOPIFY_STORE_DOMAIN',
     'SHOPIFY_STOREFRONT_ACCESS_TOKEN'
@@ -48,4 +53,9 @@ export const validateEnvironmentVariables = () => {
       'Your `SHOPIFY_STORE_DOMAIN` environment variable includes brackets (ie. `[` and / or `]`). Your site will not work with them there. Please remove them.'
     );
   }
+  */
 };
+
+export function compareItems(a: string | number, b: string | number) {
+  return a < b ? -1 : a > b ? 1 : 0;
+}
