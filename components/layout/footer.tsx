@@ -46,12 +46,12 @@ export default async function Footer() {
           </p>
           <hr className="mx-4 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
           <p>
-            <a href="mailto:crlapples19@gmail.com?subject=Wholesale%20Inquiry" className="text-black dark:text-white">
+            <a href="mailto:crlapples19@gmail.com?subject=Wholesale%20Inquiry" target="_blank" rel="noopener noreferrer" className="text-black dark:text-white">
               Wholesale
             </a>
           </p>
           <p className="md:ml-auto">
-            <a href="https://crlapples.vercel.app" className="text-black dark:text-white">
+            <a href="https://crlapples.vercel.app" target="_blank" rel="noopener noreferrer" className="text-black dark:text-white">
               Created by crlapples
             </a>
           </p>
