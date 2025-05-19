@@ -167,7 +167,7 @@ export default function CartModal() {
                             <Price
                               className="flex justify-end space-y-2 text-right text-sm"
                               amount={product.price.toString()} // Use product price
-                              currencyCode="USD" // Placeholder, replace with actual currency code
+                              currencyCode="USD"
                             />
                             <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
                               <EditItemQuantityButton
@@ -198,7 +198,7 @@ export default function CartModal() {
  <Price
                         className="text-right text-base text-black dark:text-white"
                         amount={String(Number(cart.totalPrice) * 0.08)}
-                        currencyCode="$"
+                        currencyCode="USD"
                       />
                     </div>
                     <div className="mb-3 flex items-center justify-between border-b border-neutral-200 pb-1 pt-1 dark:border-neutral-700">
@@ -210,7 +210,7 @@ export default function CartModal() {
  <Price
                         className="text-right text-base text-black dark:text-white"
                         amount={cart.totalPrice}
-                        currencyCode="$" />
+                        currencyCode="USD" />
                     </div>
                   </div>
                   <div className="mt-4">

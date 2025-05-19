@@ -144,7 +144,7 @@ async function RelatedProducts({ id }: { id: string }) {
                 label={{
                   title: product.name,
                   amount: product.price,
-                  currencyCode: "$"
+                  currencyCode: "USD"
                 }}
                 src={product.images[0] || "/placeholder-image.jpg"}
                 fill
