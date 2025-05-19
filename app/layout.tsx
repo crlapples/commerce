@@ -35,13 +35,10 @@ export default async function RootLayout({
   return (
     <html lang="en" className={GeistSans.variable}>
       <body className="bg-neutral-50 text-black selection:bg-teal-300 dark:bg-neutral-900 dark:text-white dark:selection:bg-pink-500 dark:selection:text-white">
-        {/* Temporarily commented out for debugging */}
-        {/* <CartProvider cartPromise={initialCartPromise}> */}
-          {/* <Navbar /> */}
+        <CartProvider cartPromise={initialCartPromise}>
+          <Navbar />
           <main>
             {children}
-            {/* Temporarily commented out for debugging */}
-            {/*
             <Toaster closeButton />
             <WelcomeToast />
           </main>
@@ -49,11 +46,6 @@ export default async function RootLayout({
       </body>
     </html>
   );
-            */}
-          </main>
-        {/* </CartProvider> */}
-      </body>
-    </html>
-  );
 }
+ 
 

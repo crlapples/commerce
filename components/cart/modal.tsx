@@ -15,7 +15,6 @@ import { Fragment, useEffect, useRef, useState, use } from 'react'; // Import us
 import { useCart } from './cart-context'; // Add clearCart to the import
 import { DeleteItemButton } from './delete-item-button';
 import { EditItemQuantityButton } from './edit-item-quantity-button';
-import { useProduct } from 'components/product/product-context';
 import OpenCart from './open-cart';
 
 type MerchandiseSearchParams = {
@@ -44,7 +43,6 @@ export default function CartModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const quantityRef = useRef(cart?.totalQuantity);
-  const { state } = useProduct();
   const openCart = () => setIsOpen(true);
   const closeCart = () => setIsOpen(false);
 

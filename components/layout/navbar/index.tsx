@@ -1,11 +1,24 @@
 'use client';
-import CartModal from 'components/cart/modal';
+// import CartModal from 'components/cart/modal'; // Remove static import
 import LogoSquare from 'components/logo-square';
 import Link from 'next/link';
 import { Suspense, useEffect, useState } from 'react';
 import { Menu } from 'lib/types';
 import MobileMenu from './mobile-menu';
 import Search, { SearchSkeleton } from './search';
+import dynamic from 'next/dynamic'; // Import dynamic
+import OpenCart from 'components/cart/open-cart'; // Import OpenCart
+
+const CartModal = dynamic(() => import('components/cart/modal'), {
+  ssr: false, // Prevent server-side rendering of CartModal
+});
+
+const SiteNameDiv = dynamic(() => Promise.resolve(({ siteName }: { siteName: string | undefined }) => (
+  <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
+    {siteName}
+  </div>
+)), { ssr: false });
+
 
 const { SITE_NAME } = process.env;
 
@@ -15,11 +28,8 @@ export function Navbar() {
     { title: 'Shirts', path: '/search/shirts' }
   ];
 
-  const [isClient, setIsClient] = useState(false); // State to track if code is running on client
+  // Remove isClient state and useEffect
 
-  useEffect(() => {
-    setIsClient(true); // Set to true when component mounts on client
-  }, []);
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
       <div className="block flex-none md:hidden">
@@ -35,9 +45,7 @@ export function Navbar() {
             className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
           >
             <LogoSquare />
-            <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
-              {SITE_NAME}
-            </div>
+ <SiteNameDiv siteName={SITE_NAME} />
           </Link>
           {menu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
@@ -61,8 +69,7 @@ export function Navbar() {
           </Suspense>
         </div>
         <div className="flex justify-end md:w-1/3">
-          {/* Temporarily commented out for debugging */}
-          {/* {isClient && <CartModal />} */}
+          <CartModal /> {/* Render the dynamically imported CartModal */}
         </div>
       </div>
     </nav>
