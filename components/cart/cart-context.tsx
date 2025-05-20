@@ -50,15 +50,16 @@ export function CartProvider({ children }: CartProviderProps) {
             : item
         );
       } else {
-        updatedItems = [...prevCart.items, { productId: product.id, quantity, variant }];
+        updatedItems = [
+          ...prevCart.items,
+          { productId: product.id, quantity, variant, price: Number(product.price) },
+        ];
       }
 
       const totalQuantity = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
       const totalPrice = updatedItems
-        .reduce((sum, item) => {
-          return sum + (product.id === item.productId ? Number(product.price) * item.quantity : 0);
-        }, 0)
-        .toFixed(2); // Convert to string with 2 decimal places
+        .reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0)
+        .toFixed(2);
 
       return { items: updatedItems, totalQuantity, totalPrice };
     });
@@ -88,11 +89,8 @@ export function CartProvider({ children }: CartProviderProps) {
 
       const totalQuantity = updatedItems.reduce((sum, item) => sum + item.quantity, 0);
       const totalPrice = updatedItems
-        .reduce((sum, item) => {
-          const product = prevCart.items.find((i) => i.productId === item.productId);
-          return sum + (product ? product.quantity * 0 : 0); // Placeholder: needs product price
-        }, 0)
-        .toFixed(2); // Convert to string with 2 decimal places
+        .reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0)
+        .toFixed(2);
 
       return { items: updatedItems, totalQuantity, totalPrice };
     });

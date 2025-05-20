@@ -11,6 +11,7 @@ export type CartItem = {
   productId: string;
   quantity: number;
   variant?: { color?: 'white' | 'black' };
+  price?: number;
 };
 
 export type Cart = {
