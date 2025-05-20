@@ -1,29 +1,51 @@
 'use client';
 
-import clsx from 'clsx';
-import FilterList from './filter';
-import products from 'lib/products.json';
+import Link from 'next/link';
 import { Product } from 'lib/types';
 
-function CollectionList() {
-  const collections = Array.from(new Set((products as Product[]).map(product => product.name))).map(
-    (collection) => ({
-      title: collection,
-      path: `/search/${collection.toLowerCase()}`
-    })
-  );
-
-  return <FilterList list={collections.filter(collection => collection.title)} title="Collections" />;
-}
-
-const skeleton = 'mb-3 h-4 w-5/6 animate-pulse rounded-sm';
-const activeAndTitles = 'bg-neutral-800 dark:bg-neutral-300';
-const items = 'bg-neutral-400 dark:bg-neutral-700';
+// Define explicit collections based on product categories
+const collections = [
+  { title: 'All', path: '/search' },
+  { title: 'Electronics', path: '/search/electronics' },
+  { title: 'Accessories', path: '/search/accessories' },
+];
 
 export default function Collections() {
   return (
-    <div className="col-span-2 hidden h-[400px] w-full flex-none py-4 lg:block">
-      <CollectionList />
-    </div>
+    <nav>
+      <h3 className="hidden text-xs text-neutral-500 md:block dark:text-neutral-400">Collections</h3>
+      <ul className="hidden md:block">
+        {collections.map((collection) => (
+          <li key={collection.path} className="mt-2 flex text-black dark:text-white">
+            <Link
+              href={collection.path}
+              className="w-full text-sm underline-offset-4 hover:underline dark:hover:text-neutral-100"
+              style={{ textDecoration: collection.title === 'All' ? 'underline' : 'none' }}
+            >
+              {collection.title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <ul className="md:hidden">
+        <div className="relative">
+          <div className="flex w-full items-center justify-between rounded border border-black/30 px-4 py-2 text-sm dark:border-white/30">
+            <div>All</div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+              data-slot="icon"
+              className="h-4"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+            </svg>
+          </div>
+        </div>
+      </ul>
+    </nav>
   );
 }
