@@ -49,12 +49,12 @@ export default function CartModal() {
       window.matchMedia('(prefers-color-scheme: dark)').matches;
     
     // Set initial color scheme
-    setColorScheme(isDarkMode ? 'black' : 'white');
+    setColorScheme(isDarkMode ? 'blue' : 'white');
     
     // Listen for changes in color scheme preference
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
-      setColorScheme(e.matches ? 'black' : 'white');
+      setColorScheme(e.matches ? 'blue' : 'white');
     };
     
     mediaQuery.addEventListener('change', handleChange);
@@ -218,7 +218,7 @@ export default function CartModal() {
                       />
                     </div>
                   </div>
-                  <div className="mt-4 dark:p-6 dark:bg-white">
+                  <div className="mt-4 dark:py-3 dark:px-2 dark:rounded-[3px] dark:bg-white">
                     <PayPalButtons
                       style={{
                         layout: 'vertical',
