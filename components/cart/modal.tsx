@@ -14,6 +14,7 @@ import OpenCart from './open-cart';
 import Price from 'components/price';
 import { createUrl } from 'lib/utils';
 import { Product, CartItem } from 'lib/types';
+import products from 'lib/products.json'
 
 // Ensure PAYPAL_CLIENT_ID is set
 const paypalClientId = process.env.PAYPAL_CLIENT_ID;
@@ -24,12 +25,11 @@ if (process.env.NODE_ENV !== 'production' && !paypalClientId) {
 
 async function getProductsFromJson(): Promise<Product[]> {
   try {
-    const res = await fetch('lib/products.json');
-    if (!res.ok) {
-      throw new Error(`Failed to fetch products: ${res.statusText}`);
+    const res = products as Product[]
+    if (!res) {
+      throw new Error(`Failed to fetch products: ${res}`);
     }
-    const products = await res.json();
-    return products as Product[];
+    return res;
   } catch (error) {
     console.error('Error fetching products:', error);
     return [];
