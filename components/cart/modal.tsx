@@ -276,7 +276,7 @@ export default function CartModal() {
                       
                           const details = await response.json();
                           console.log('Payment captured', details);
-                          alert(`Transaction completed by ${details.details.payer.name.given_name}`);
+                          alert(`Transaction completed by ${details.details.payer.name.given_name}. You will be emailed with the tracking number soon.`);
                           clearCart();
                           closeCart();
                         } catch (error) {
