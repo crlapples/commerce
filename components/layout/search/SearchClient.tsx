@@ -95,6 +95,9 @@ export default function SearchClient({
     setFilteredProducts(result);
   }, [query, sort, collection, initialProducts]);
 
+  // Build base URL for sort links, preserving collection
+  const basePath = collection ? `/search/${collection}` : '/search';
+
   return (
     <div className="mx-auto flex max-w-screen-2xl flex-col gap-8 px-4 pb-4 text-black md:flex-row dark:text-white">
       {/* Left Sidebar: Collections */}
@@ -106,7 +109,7 @@ export default function SearchClient({
       <div className="order-last min-h-screen w-full md:order-none">
         <p className="mb-4">
           Showing {filteredProducts.length} results for{' '}
-          <span className="font-bold">&quot;{query || collection || 'all'}&quot;</span>
+          <span className="font-bold">"{query || collection || 'all'}"</span>
         </p>
         {filteredProducts.length === 0 ? (
           <p className="text-neutral-500">No products found.</p>
@@ -127,7 +130,7 @@ export default function SearchClient({
             {sortOptions.map((option) => (
               <li key={option.slug} className="mt-2 flex text-sm text-black dark:text-white">
                 <Link
-                  href={`/search${query ? `?q=${query}` : ''}${option.slug ? `&sort=${option.slug}` : ''}`}
+                  href={`${basePath}${query ? `?q=${query}` : ''}${option.slug ? `${query ? '&' : '?'}sort=${option.slug}` : ''}`}
                   className="w-full hover:underline hover:underline-offset-4"
                   style={{ textDecoration: option.slug === sort ? 'underline' : 'none' }}
                 >

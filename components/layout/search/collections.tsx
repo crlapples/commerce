@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Product } from 'lib/types';
 
 // Define explicit collections based on product categories
@@ -11,6 +12,8 @@ const collections = [
 ];
 
 export default function Collections() {
+  const pathname = usePathname();
+
   return (
     <nav>
       <h3 className="hidden text-xs text-neutral-500 md:block dark:text-neutral-400">Collections</h3>
@@ -20,7 +23,7 @@ export default function Collections() {
             <Link
               href={collection.path}
               className="w-full text-sm underline-offset-4 hover:underline dark:hover:text-neutral-100"
-              style={{ textDecoration: collection.title === 'All' ? 'underline' : 'none' }}
+              style={{ textDecoration: pathname === collection.path ? 'underline' : 'none' }}
             >
               {collection.title}
             </Link>
@@ -30,7 +33,7 @@ export default function Collections() {
       <ul className="md:hidden">
         <div className="relative">
           <div className="flex w-full items-center justify-between rounded border border-black/30 px-4 py-2 text-sm dark:border-white/30">
-            <div>All</div>
+            <div>{collections.find(c => c.path === pathname)?.title || 'All'}</div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
