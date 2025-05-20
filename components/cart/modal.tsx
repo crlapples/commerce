@@ -16,10 +16,10 @@ import { createUrl } from 'lib/utils';
 import { Product, CartItem } from 'lib/types';
 
 // Ensure PAYPAL_CLIENT_ID is set
-const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+const paypalClientId = process.env.PAYPAL_CLIENT_ID;
 
 if (process.env.NODE_ENV !== 'production' && !paypalClientId) {
-  throw new Error('NEXT_PUBLIC_PAYPAL_CLIENT_ID environment variable is not set.');
+  throw new Error('PAYPAL_CLIENT_ID environment variable is not set.');
 }
 
 async function getProductsFromJson(): Promise<Product[]> {
