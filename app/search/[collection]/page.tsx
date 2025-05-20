@@ -6,10 +6,11 @@ export default async function CollectionPage({
   params,
   searchParams,
 }: {
-  params: { collection: string };
+  params: Promise<Record<string, string | string[] | undefined>>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const products = await getProducts();
+  const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
 
   return (
@@ -18,7 +19,7 @@ export default async function CollectionPage({
         initialProducts={products}
         initialQuery={resolvedSearchParams.q?.toString().toLowerCase() || ''}
         initialSort={resolvedSearchParams.sort?.toString() || ''}
-        initialCollection={params.collection}
+        initialCollection={resolvedParams.collection?.toString().toLowerCase() || ''}
       />
     </Suspense>
   );
