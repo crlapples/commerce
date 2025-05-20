@@ -19,6 +19,7 @@ export function DeleteItemButton({
       action={() => {
         optimisticUpdate(itemId, 'delete'); // Use itemId
         updateCartItem(itemId, 'delete'); // Call updateCartItem with itemId and 'delete'
+        console.log("delete clicked")
       }}
     >
       <button

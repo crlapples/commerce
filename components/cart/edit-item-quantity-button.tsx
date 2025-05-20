@@ -14,7 +14,7 @@ function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
         type === 'plus' ? 'Increase item quantity' : 'Reduce item quantity'
       }
       className={clsx(
-        'ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full p-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80',
+        'ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full p-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80 hover:cursor-pointer',
         {
           'ml-auto': type === 'minus'
         }
@@ -46,10 +46,11 @@ export function EditItemQuantityButton({
       action={async () => {
         optimisticUpdate(item.productId, itemUpdateType);
         updateCartItem(item.productId, itemUpdateType);
+        console.log("clicked")
       }}
     >
       <SubmitButton type={type} />
-      <p aria-live="polite" className="sr-only hover:cursor-pointer" role="status">
+      <p aria-live="polite" className="sr-only" role="status">
         {item.productId}
       </p>
     </form>
