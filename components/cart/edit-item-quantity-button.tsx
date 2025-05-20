@@ -45,10 +45,11 @@ export function EditItemQuantityButton({
     <form
       action={async () => {
         optimisticUpdate(item.productId, itemUpdateType);
+        updateCartItem(item.productId, itemUpdateType);
       }}
     >
       <SubmitButton type={type} />
-      <p aria-live="polite" className="sr-only" role="status">
+      <p aria-live="polite" className="sr-only hover:cursor-pointer" role="status">
         {item.productId}
       </p>
     </form>
