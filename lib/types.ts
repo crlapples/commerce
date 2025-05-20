@@ -1,13 +1,11 @@
 export type Product = {
   id: string;
-  name: string;
   collection?: string;
+  name: string;
+  description: string;
   price: string;
   images: string[];
-  description?: string;
-  variant?: {
-    color?: string;
-  };
+  variant?: { color?: 'white' | 'black' };
 };
 
 export type CartItem = {
