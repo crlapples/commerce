@@ -24,7 +24,7 @@ if (process.env.NODE_ENV !== 'production' && !paypalClientId) {
 
 async function getProductsFromJson(): Promise<Product[]> {
   try {
-    const res = await fetch('/products.json');
+    const res = await fetch('lib/products.json');
     if (!res.ok) {
       throw new Error(`Failed to fetch products: ${res.statusText}`);
     }
@@ -52,7 +52,24 @@ export default function CartModal() {
   }, [cart?.totalQuantity, isOpen]);
 
   const openCart = () => setIsOpen(true);
-  const closeCart = () => setIsOpen(false);
+  const closeCart = () => {
+    console.log('Close cart clicked');
+    setIsOpen(false);
+  };
+
+  function CloseCart({ className }: { className?: string }) {
+    return (
+      <div className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white">
+        <XMarkIcon
+          className={clsx('h-6 transition-all ease-in-out hover:scale-110', className)}
+          onClick={(e) => {
+            e.stopPropagation();
+            closeCart();
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <PayPalScriptProvider options={{ clientId: paypalClientId as string }}>
@@ -238,12 +255,3 @@ export default function CartModal() {
   );
 }
 
-function CloseCart({ className }: { className?: string }) {
-  return (
-    <div className="relative flex h-11 w-11 items-center justify-center rounded-md border border-neutral-200 text-black transition-colors dark:border-neutral-700 dark:text-white">
-      <XMarkIcon
-        className={clsx('h-6 transition-all ease-in-out hover:scale-110', className)}
-      />
-    </div>
-  );
-}
