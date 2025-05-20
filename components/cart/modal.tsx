@@ -218,7 +218,7 @@ export default function CartModal() {
                       />
                     </div>
                   </div>
-                  <div className="mt-4">
+                  <div className="mt-4 dark:p-6 dark:bg-white">
                     <PayPalButtons
                       style={{
                         layout: 'vertical',
