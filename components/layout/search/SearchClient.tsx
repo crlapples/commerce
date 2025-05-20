@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Collections from './collections';
@@ -52,6 +52,19 @@ export default function SearchClient({
   const sort = searchParams.get('sort') || initialSort;
   const collection = searchParams.get('collection')?.toLowerCase() || initialCollection;
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(initialProducts);
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close sort dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortDropdownRef.current && !sortDropdownRef.current.contains(event.target as Node)) {
+        setIsSortOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     let result = initialProducts;
@@ -78,7 +91,7 @@ export default function SearchClient({
     if (sort) {
       result = [...result].sort((a, b) => {
         if (sort === 'price-asc') return parseFloat(a.price) - parseFloat(b.price);
-        if (sort === 'price-desc') return parseFloat(b.price) - parseFloat(a.price);
+        if (sort === 'price-desc') return parseFloat(b.price) - parseFloat(b.price);
         if (sort === 'latest-desc') {
           const aId = a.id ? parseInt(a.id.toString(), 10) : 0;
           const bId = b.id ? parseInt(b.id.toString(), 10) : 0;
@@ -140,8 +153,11 @@ export default function SearchClient({
             ))}
           </ul>
           <ul className="md:hidden">
-            <div className="relative">
-              <div className="flex w-full items-center justify-between rounded border border-black/30 px-4 py-2 text-sm dark:border-white/30">
+            <div className="relative" ref={sortDropdownRef}>
+              <button
+                className="flex w-full items-center justify-between rounded border border-black/30 px-4 py-2 text-sm dark:border-white/30"
+                onClick={() => setIsSortOpen(!isSortOpen)}
+              >
                 <div>{sortOptions.find(opt => opt.slug === sort)?.title || 'Relevance'}</div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -151,11 +167,26 @@ export default function SearchClient({
                   stroke="currentColor"
                   aria-hidden="true"
                   data-slot="icon"
-                  className="h-4"
+                  className={`h-4 transition-transform ${isSortOpen ? 'rotate-180' : ''}`}
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                 </svg>
-              </div>
+              </button>
+              {isSortOpen && (
+                <ul className="absolute z-10 mt-1 w-full rounded border border-black/30 bg-white text-sm shadow-lg dark:border-white/30 dark:bg-black">
+                  {sortOptions.map((option) => (
+                    <li key={option.slug}>
+                      <Link
+                        href={`${basePath}${query ? `?q=${query}` : ''}${option.slug ? `${query ? '&' : '?'}sort=${option.slug}` : ''}`}
+                        className="block px-4 py-2 text-black hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-800"
+                        onClick={() => setIsSortOpen(false)}
+                      >
+                        {option.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </ul>
         </nav>
