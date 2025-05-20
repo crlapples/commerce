@@ -99,7 +99,7 @@ export default function CartModal() {
                   <p className="mt-6 text-center text-2xl font-bold">Your cart is empty.</p>
                 </div>
               ) : (
-                <div className="flex h-full flex-col justify-between overflow-hidden p-1">
+                <div className="flex h-full flex-col justify-between p-1">
                   <ul className="grow overflow-auto py-4">
                     {cart.items.map((item, i) => {
                       const product = products.find((p) => p.id === item.productId);
@@ -116,7 +116,7 @@ export default function CartModal() {
                           className="flex w-full flex-col border-b border-neutral-300 dark:border-neutral-700"
                         >
                           <div className="relative flex w-full flex-row justify-between px-1 py-4">
-                            <div className="absolute z-40 -ml-1 -mt-2">
+                            <div className="absolute z-40 -ml-2 -mt-2">
                               <DeleteItemButton item={item} optimisticUpdate={updateCartItem} />
                             </div>
                             <div className="flex flex-row">

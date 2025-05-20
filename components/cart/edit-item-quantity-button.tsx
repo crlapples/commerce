@@ -44,7 +44,6 @@ export function EditItemQuantityButton({
   return (
     <form
       action={async () => {
-        optimisticUpdate(item.productId, itemUpdateType);
         updateCartItem(item.productId, itemUpdateType);
       }}
     >
