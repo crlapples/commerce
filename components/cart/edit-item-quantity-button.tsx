@@ -44,7 +44,7 @@ export function EditItemQuantityButton({
   return (
     <form
       action={async () => {
-        updateCartItem(item.productId, itemUpdateType);
+        optimisticUpdate(item.productId, itemUpdateType);
       }}
     >
       <SubmitButton type={type} />

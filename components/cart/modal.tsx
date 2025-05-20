@@ -104,7 +104,7 @@ export default function CartModal() {
                 </div>
               ) : (
                 <div className="flex h-full flex-col justify-between p-1">
-                  <ul className="grow overflow-auto py-4">
+                  <ul className="grow overflow-visible py-4">
                     {cart.items.map((item, i) => {
                       const product = products.find((p) => p.id === item.productId);
                       if (!product) return null;
