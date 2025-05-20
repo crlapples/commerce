@@ -44,9 +44,12 @@ export function EditItemQuantityButton({
   return (
     <form
       action={async () => {
-        optimisticUpdate(item.productId, itemUpdateType);
-        updateCartItem(item.productId, itemUpdateType);
-        console.log("clicked")
+        console.log('EditItemQuantityButton clicked:', {
+          productId: item.productId,
+          updateType: itemUpdateType,
+          variant: item.variant,
+        });
+        updateCartItem(item.productId, itemUpdateType, item.variant);
       }}
     >
       <SubmitButton type={type} />
