@@ -228,39 +228,61 @@ export default function CartModal() {
                         tagline: false
                       }}
                       createOrder={async () => {
-                        const orderItems = cart.items
-                          .map((item) => {
-                            const product = products.find((p) => p.id === item.productId);
-                            if (!product) return null;
-                            return {
-                              productId: item.productId,
-                              quantity: item.quantity,
-                              variant: item.variant,
-                              price: product.price,
-                              name: product.name,
-                            };
-                          })
-                          .filter((item): item is NonNullable<typeof item> => item !== null);
-
-                        const response = await fetch('/api/paypal/create-order', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ items: orderItems, totalAmount: cart.totalPrice }),
-                        });
-                        const order = await response.json();
-                        return order.id;
+                        try {
+                          const orderItems = cart.items
+                            .map((item) => {
+                              const product = products.find((p) => p.id === item.productId);
+                              if (!product) return null;
+                              return {
+                                name: product.name,
+                                price: Number(product.price).toFixed(2), // Ensure price is a string with 2 decimal places
+                                quantity: item.quantity,
+                              };
+                            })
+                            .filter((item): item is NonNullable<typeof item> => item !== null);
+                      
+                          const response = await fetch('/api/paypal/create-order', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ cartItems: orderItems }), // Match the expected "cartItems" key
+                          });
+                      
+                          if (!response.ok) {
+                            throw new Error(`Failed to create PayPal order: ${response.statusText}`);
+                          }
+                      
+                          const order = await response.json();
+                          if (!order.orderID) {
+                            throw new Error('No order ID returned from PayPal');
+                          }
+                      
+                          return order.orderID; // Return the order ID
+                        } catch (error) {
+                          console.error('Error in createOrder:', error);
+                          throw error; // Let PayPal SDK handle the error
+                        }
                       }}
                       onApprove={async (data) => {
-                        const response = await fetch('/api/paypal/capture', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({ orderID: data.orderID }),
-                        });
-                        const details = await response.json();
-                        console.log('Payment captured', details);
-                        alert(`Transaction completed by ${details.payer.name.given_name}`);
-                        clearCart();
-                        closeCart();
+                        try {
+                          const response = await fetch('/api/paypal/capture', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ orderID: data.orderID }),
+                          });
+                      
+                          if (!response.ok) {
+                            throw new Error(`Failed to capture PayPal order: ${response.statusText}`);
+                          }
+                      
+                          const details = await response.json();
+                          console.log('Payment captured', details);
+                          alert(`Transaction completed by ${details.details.payer.name.given_name}`);
+                          clearCart();
+                          closeCart();
+                        } catch (error) {
+                          console.error('Error in onApprove:', error);
+                          alert('Failed to capture payment. Please try again.');
+                        }
                       }}
                     />
                   </div>
