@@ -8,14 +8,7 @@ import FilterList from 'components/layout/search/filter';
 import { SortFilterItem } from 'lib/constants';
 import { Product } from 'lib/types';
 import { GridTileImage } from 'components/grid/tile';
-import fs from 'fs/promises';
-import path from 'path';
-
-async function getProductsFromJson(): Promise<Product[]> {
-  const filePath = path.join(process.cwd(), 'lib', 'products.json');
-  const jsonData = await fs.readFile(filePath, 'utf-8');
-  return JSON.parse(jsonData);
-}
+import products from 'lib/products.json';
 
 const sortOptions: SortFilterItem[] = [
   { title: 'Relevance', slug: '', sortKey: 'RELEVANCE', reverse: false },
@@ -50,43 +43,38 @@ export default function SearchPage() {
   const query = searchParams.get('q')?.toLowerCase() || '';
   const sort = searchParams.get('sort') || '';
   const collection = searchParams.get('collection')?.toLowerCase() || '';
-  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    async function fetchProducts() {
-      const allProducts = await getProductsFromJson();
-      let filteredProducts = allProducts;
+    let result = products as Product[];
 
-      if (query) {
-        filteredProducts = filteredProducts.filter(product =>
-          product.name.toLowerCase().includes(query) ||
-          product.description?.toLowerCase().includes(query)
-        );
-      }
-
-      if (collection) {
-        filteredProducts = filteredProducts.filter(product =>
-          product.name.toLowerCase() === collection
-        );
-      }
-
-      if (sort) {
-        filteredProducts = [...filteredProducts].sort((a, b) => {
-          if (sort === 'price-asc') return parseFloat(a.price) - parseFloat(b.price);
-          if (sort === 'price-desc') return parseFloat(b.price) - parseFloat(a.price);
-          if (sort === 'newest') {
-            const aId = a.id ? parseInt(a.id.toString(), 10) : 0;
-            const bId = b.id ? parseInt(b.id.toString(), 10) : 0;
-            return bId - aId; // Higher ID is newer
-          }
-          return 0;
-        });
-      }
-
-      setProducts(filteredProducts);
+    if (query) {
+      result = result.filter(product =>
+        product.name.toLowerCase().includes(query) ||
+        product.description?.toLowerCase().includes(query)
+      );
     }
 
-    fetchProducts();
+    if (collection) {
+      result = result.filter(product =>
+        product.name.toLowerCase() === collection
+      );
+    }
+
+    if (sort) {
+      result = [...result].sort((a, b) => {
+        if (sort === 'price-asc') return parseFloat(a.price) - parseFloat(b.price);
+        if (sort === 'price-desc') return parseFloat(b.price) - parseFloat(a.price);
+        if (sort === 'newest') {
+          const aId = a.id ? parseInt(a.id.toString(), 10) : 0;
+          const bId = b.id ? parseInt(b.id.toString(), 10) : 0;
+          return bId - aId; // Higher ID is newer
+        }
+        return 0;
+      });
+    }
+
+    setFilteredProducts(result);
   }, [query, sort, collection]);
 
   return (
@@ -107,13 +95,13 @@ export default function SearchPage() {
           <div className="col-span-1 md:col-span-2 lg:col-span-3">
             <h2 className="mb-4 text-xl font-semibold">
               {query ? `Results for "${query}"` : 'All Products'}
-              {products.length > 0 ? ` (${products.length})` : ''}
+              {filteredProducts.length > 0 ? ` (${filteredProducts.length})` : ''}
             </h2>
-            {products.length === 0 ? (
+            {filteredProducts.length === 0 ? (
               <p className="text-neutral-500">No products found.</p>
             ) : (
               <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3">
-                {products.map((product) => (
+                {filteredProducts.map((product) => (
                   <ProductGridItem key={product.id} item={product} />
                 ))}
               </div>

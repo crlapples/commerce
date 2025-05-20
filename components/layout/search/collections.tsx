@@ -1,25 +1,18 @@
-import clsx from 'clsx';
+'use client';
+
 import { Suspense } from 'react';
-
-import { Product } from 'lib/types';
+import clsx from 'clsx';
 import FilterList from './filter';
-import fs from 'fs/promises';
-import path from 'path';
-
-async function getProductsFromJson(): Promise<Product[]> {
-  const filePath = path.join(process.cwd(), 'lib', 'products.json');
-  const jsonData = await fs.readFile(filePath, 'utf-8');
-  return JSON.parse(jsonData);
-}
+import products from 'lib/products.json';
 
 async function CollectionList() {
-  const products = await getProductsFromJson();
   const collections = Array.from(new Set(products.map(product => product.name))).map(
     (collection) => ({
       title: collection,
       path: `/search/${collection.toLowerCase()}`
     })
   );
+
   return <FilterList list={collections.filter(collection => collection.title)} title="Collections" />;
 }
 
