@@ -10,6 +10,9 @@ interface CartContextType {
   updateCartItem: (productId: string, updateType: UpdateType, variant?: CartItem['variant']) => void;
   addCartItem: (product: Product, quantity: number, variant?: CartItem['variant']) => void;
   clearCart: () => void;
+  isCartOpen: boolean;
+  openCart: () => void;
+  closeCart: () => void;
 }
 
 interface CartProviderProps {
@@ -28,6 +31,7 @@ export function CartProvider({ children }: CartProviderProps) {
     }
     return { items: [], totalQuantity: 0, totalPrice: '0.00' };
   });
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(false)
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -100,11 +104,22 @@ export function CartProvider({ children }: CartProviderProps) {
     setCart({ items: [], totalQuantity: 0, totalPrice: '0.00' });
   };
 
+  const openCart = () => {
+    setIsCartOpen(true);
+  };
+
+  const closeCart = () => {
+    setIsCartOpen(false);
+  };
+
   const value: CartContextType = {
     cart,
     addCartItem,
     updateCartItem,
     clearCart,
+    isCartOpen,
+    openCart,
+    closeCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

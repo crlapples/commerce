@@ -37,25 +37,12 @@ async function getProductsFromJson(): Promise<Product[]> {
 }
 
 export default function CartModal() {
-  const { cart, updateCartItem, clearCart } = useCart();
-  const [isOpen, setIsOpen] = useState(false);
+  const { cart, updateCartItem, clearCart, isCartOpen, openCart, closeCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     getProductsFromJson().then(setProducts);
   }, []);
-
-  useEffect(() => {
-    if (cart?.totalQuantity && cart.totalQuantity > 0 && !isOpen) {
-      setIsOpen(true);
-    }
-  }, [cart?.totalQuantity, isOpen]);
-
-  const openCart = () => setIsOpen(true);
-  const closeCart = () => {
-    console.log('Close cart clicked');
-    setIsOpen(false);
-  };
 
   function CloseCart({ className }: { className?: string }) {
     return (
@@ -76,7 +63,7 @@ export default function CartModal() {
       <button aria-label="Open cart" onClick={openCart} className="hover:cursor-pointer">
         <OpenCart quantity={cart?.totalQuantity} />
       </button>
-      <Transition show={isOpen}>
+      <Transition show={isCartOpen}>
         <Dialog onClose={closeCart} className="relative z-50">
           <Transition.Child
             as={Fragment}
