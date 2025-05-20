@@ -13,10 +13,10 @@ export default async function Footer() {
   const menu: Menu[] = [
     { title: 'About Us', path: '/about' },
     { title: 'Contact', path: '/contact' },
-    { title: 'Terms & Conditions', path: '/terms' },
-    { title: 'Shipping & Return Policy', path: '/shipping-return' },
     { title: 'Privacy Policy', path: '/privacy' },
     { title: 'FAQ', path: '/faq' },
+    { title: 'Terms & Conditions', path: '/terms' },
+    { title: 'Shipping & Return Policy', path: '/shipping-return' },
   ];
   const copyrightName = COMPANY_NAME || SITE_NAME || '';
 
@@ -31,8 +31,8 @@ export default async function Footer() {
         </div>
         <Suspense
           fallback={
-            <div className="flex w-full flex-1">
-              <ul className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <div className="flex w-full flex-1 justify-center">
+              <ul className="grid grid-cols-1 gap-30 md:grid-cols-3">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <li key={index} className="flex flex-col gap-2">
                     <div className={skeleton} />
