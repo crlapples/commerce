@@ -5,17 +5,18 @@ import { getProducts } from 'lib/data';
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { q?: string; sort?: string; collection?: string };
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const products = await getProducts();
+  const resolvedSearchParams = await searchParams;
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <SearchClient
         initialProducts={products}
-        initialQuery={searchParams.q?.toLowerCase() || ''}
-        initialSort={searchParams.sort || ''}
-        initialCollection={searchParams.collection?.toLowerCase() || ''}
+        initialQuery={resolvedSearchParams.q?.toString().toLowerCase() || ''}
+        initialSort={resolvedSearchParams.sort?.toString() || ''}
+        initialCollection={resolvedSearchParams.collection?.toString().toLowerCase() || ''}
       />
     </Suspense>
   );
