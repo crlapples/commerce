@@ -16,6 +16,8 @@ import { createUrl } from 'lib/utils';
 import { Product, CartItem } from 'lib/types';
 import products from 'lib/products.json'
 
+type PayPalButtonColor = 'black' | 'white' | 'gold' | 'blue' | 'silver';
+
 // Ensure PAYPAL_CLIENT_ID is set
 const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
@@ -39,6 +41,29 @@ async function getProductsFromJson(): Promise<Product[]> {
 export default function CartModal() {
   const { cart, updateCartItem, clearCart, isCartOpen, openCart, closeCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
+  const [colorScheme, setColorScheme] = useState<PayPalButtonColor>('white');
+  
+  useEffect(() => {
+    // Check if the user prefers dark mode
+    const isDarkMode = window.matchMedia && 
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    // Set initial color scheme
+    setColorScheme(isDarkMode ? 'black' : 'white');
+    
+    // Listen for changes in color scheme preference
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      setColorScheme(e.matches ? 'black' : 'white');
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    
+    // Clean up
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
+  }, []);
 
   useEffect(() => {
     getProductsFromJson().then(setProducts);
@@ -99,7 +124,7 @@ export default function CartModal() {
                   <p className="mt-6 text-center text-2xl font-bold">Your cart is empty.</p>
                 </div>
               ) : (
-                <div className="flex h-full flex-col justify-between p-1">
+                <div className="flex h-full flex-col justify-between p-1 overflow-y-scroll">
                   <ul className="grow overflow-visible py-4">
                     {cart.items.map((item, i) => {
                       const product = products.find((p) => p.id === item.productId);
@@ -195,6 +220,13 @@ export default function CartModal() {
                   </div>
                   <div className="mt-4">
                     <PayPalButtons
+                      style={{
+                        layout: 'vertical',
+                        color: colorScheme, // 'white' for dark mode, 'black' for light mode
+                        shape: 'rect',
+                        label: 'checkout',
+                        tagline: false
+                      }}
                       createOrder={async () => {
                         const orderItems = cart.items
                           .map((item) => {
