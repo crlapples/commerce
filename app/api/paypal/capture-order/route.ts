@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Configure PayPal Environment
 // Replace with your actual PayPal Client ID and Client Secret
-const clientId = process.env.YOUR_PAYPAL_CLIENT_ID || 'YOUR_PAYPAL_CLIENT_ID';
-const clientSecret = process.env.YOUR_PAYPAL_CLIENT_SECRET || 'YOUR_PAYPAL_CLIENT_SECRET';
+const clientId = process.env.PAYPAL_CLIENT_ID
+const clientSecret = process.env.PAYPAL_CLIENT_SECRET
 
 // Use SandboxEnvironment for testing and ProductionEnvironment for production
 const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
