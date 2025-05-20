@@ -7,17 +7,26 @@ function createClient() {
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
   console.log('PayPal Client ID (server):', clientId);
-  console.log('PayPal Client Secret (server):', clientSecret ? 'Secret is set' : 'Secret is missing');
+  console.log('PayPal Client Secret length (server):', clientSecret?.length || 'Missing');
 
   if (!clientId || !clientSecret) {
     throw new Error('Missing PayPal credentials: Client ID or Secret is not set');
   }
 
-  const environment = process.env.NODE_ENV === 'production'
-    ? new paypal.core.LiveEnvironment(clientId, clientSecret)
-    : new paypal.core.SandboxEnvironment(clientId, clientSecret);
+  // Log Base64-encoded credentials
+  const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+  console.log('Base64-encoded auth (client_id:client_secret):', auth);
 
-  return new paypal.core.PayPalHttpClient(environment);
+  // Verify against curl's expected Base64
+  const expectedAuth = 'QWRHMFNiRmQ0MDB5aDBzdDE4Y3NrWDdZSWgtTEQyaHEzZXNhaDBPZjdieFBRSjVPYUp0YVMtY1RNQTk2RGNKY0l2dndRR3zQbGN1amlYSEI6RUtHT19QXzVJcmlUQXFndFZaVWtzLTBVemQtd01BUDMxUHFQTWxUbkh1cUptODF3TlhRUzlOa3poWVZXNFpkR1Q5R2laNmlTVVhnbF9XdW0=';
+  console.log('Base64 matches curl:', auth === expectedAuth);
+
+  const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
+  const client = new paypal.core.PayPalHttpClient(environment);
+
+  console.log('PayPal API endpoint:', environment.baseUrl);
+
+  return client;
 }
 
 export const dynamic = 'force-dynamic';
@@ -72,17 +81,26 @@ export async function POST(request: Request) {
       ],
     });
 
+    console.log('Creating PayPal order with total:', orderTotal);
     const response = await client.execute(orderRequest);
+    console.log('PayPal order created:', response.result.id);
     return NextResponse.json({ orderID: response.result.id });
   } catch (error: any) {
     console.error('PayPal order error:', error);
+    const errorDetails = error.response
+      ? {
+          status: error.statusCode,
+          message: error.message,
+          response: error.response,
+        }
+      : { message: error.message };
     return NextResponse.json(
       {
         error: 'Failed to create order',
         message: error.message || 'Unknown error occurred',
-        details: error.response ? JSON.stringify(error.response) : null,
+        details: errorDetails,
       },
-      { status: 500 }
+      { status: error.statusCode || 500 }
     );
   }
 }
