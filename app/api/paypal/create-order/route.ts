@@ -2,13 +2,15 @@
 import paypal from '@paypal/checkout-server-sdk';
 import { NextResponse } from 'next/server';
 
-// Initialize PayPal environment
 function createClient() {
   const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
+  console.log('PayPal Client ID (server):', clientId);
+  console.log('PayPal Client Secret (server):', clientSecret ? 'Secret is set' : 'Secret is missing');
+
   if (!clientId || !clientSecret) {
-    throw new Error('Missing PayPal credentials');
+    throw new Error('Missing PayPal credentials: Client ID or Secret is not set');
   }
 
   const environment = process.env.NODE_ENV === 'production'
@@ -30,7 +32,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid cart items' }, { status: 400 });
     }
 
-    // Calculate order total from cart items
     const orderTotal = cartItems
       .reduce((total: number, item: { name: string; price: string; quantity: number }) => {
         const price = parseFloat(item.price);
@@ -76,7 +77,11 @@ export async function POST(request: Request) {
   } catch (error: any) {
     console.error('PayPal order error:', error);
     return NextResponse.json(
-      { error: 'Failed to create order', message: error.message },
+      {
+        error: 'Failed to create order',
+        message: error.message || 'Unknown error occurred',
+        details: error.response ? JSON.stringify(error.response) : null,
+      },
       { status: 500 }
     );
   }
