@@ -251,7 +251,7 @@ export default function CartModal() {
                         return order.id;
                       }}
                       onApprove={async (data) => {
-                        const response = await fetch('/api/paypal/capture-order', {
+                        const response = await fetch('/api/paypal/capture', {
                           method: 'POST',
                           headers: { 'Content-Type': 'application/json' },
                           body: JSON.stringify({ orderID: data.orderID }),
