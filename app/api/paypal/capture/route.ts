@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import paypal from '@paypal/checkout-server-sdk';
 
 // Configure PayPal environment
-const clientId = process.env.PAYPAL_CLIENT_ID!;
+const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!;
 const clientSecret = process.env.PAYPAL_CLIENT_SECRET!;
 
 const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
