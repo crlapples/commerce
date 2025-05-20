@@ -1,12 +1,12 @@
 'use client';
 
-import { Suspense } from 'react';
 import clsx from 'clsx';
 import FilterList from './filter';
 import products from 'lib/products.json';
+import { Product } from 'lib/types';
 
-async function CollectionList() {
-  const collections = Array.from(new Set(products.map(product => product.name))).map(
+function CollectionList() {
+  const collections = Array.from(new Set((products as Product[]).map(product => product.name))).map(
     (collection) => ({
       title: collection,
       path: `/search/${collection.toLowerCase()}`
@@ -22,23 +22,8 @@ const items = 'bg-neutral-400 dark:bg-neutral-700';
 
 export default function Collections() {
   return (
-    <Suspense
-      fallback={
-        <div className="col-span-2 hidden h-[400px] w-full flex-none py-4 lg:block">
-          <div className={clsx(skeleton, activeAndTitles)} />
-          <div className={clsx(skeleton, activeAndTitles)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-          <div className={clsx(skeleton, items)} />
-        </div>
-      }
-    >
+    <div className="col-span-2 hidden h-[400px] w-full flex-none py-4 lg:block">
       <CollectionList />
-    </Suspense>
+    </div>
   );
 }
