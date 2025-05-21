@@ -52,7 +52,7 @@ export default function FAQContent() {
     return (
       <div className="max-w-4xl w-full bg-white dark:bg-black text-black dark:text-white border-neutral-200 dark:border-neutral-800 rounded-lg py-3 px-8 md:py-8 md:px-8 my-auto">
         <h1 className="text-3xl font-bold mb-4 text-center">Frequently Asked Questions</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 px-2 mb-6">Find answers to common questions about shopping with [Your Company Name].</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Find answers to common questions about shopping with [Your Company Name].</p>
         {faqs.map((faq, index) => (
           <div key={index} className="mb-4">
             <div className="w-full flex justify-between items-center text-left text-lg font-semibold text-black dark:text-white p-2">
@@ -69,7 +69,7 @@ export default function FAQContent() {
             className="inline-block hover:underline"
             aria-label="Contact support via email"
           >
-           <EnvelopeIcon className="h-6 w-6 -mb-[7px] align-middle" />
+           <EnvelopeIcon className="h-6 w-6 -mb-[8px] align-middle" />
           </a>
         </p>
       </div>
@@ -79,7 +79,7 @@ export default function FAQContent() {
   return (
     <div className="max-w-4xl w-full bg-white dark:bg-black text-black dark:text-white border-neutral-200 dark:border-neutral-800 rounded-lg py-3 px-8 md:py-8 md:px-8 my-auto">
       <h1 className="text-3xl font-bold mb-4 text-center">Frequently Asked Questions</h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 px-2">Find answers to common questions about shopping with [Your Company Name].</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Find answers to common questions about shopping with [Your Company Name].</p>
       {faqs.map((faq, index) => (
         <div key={index} className="mb-4">
           <button
@@ -104,7 +104,7 @@ export default function FAQContent() {
           className="inline-block hover:underline"
           aria-label="Contact support via email"
         >
-          <EnvelopeIcon className="h-6 w-6 -mb-[7px] align-middle" />
+          <EnvelopeIcon className="h-6 w-6 -mb-[8px] align-middle" />
         </a>
       </p>
     </div>
