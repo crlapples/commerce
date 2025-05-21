@@ -66,10 +66,10 @@ export default function FAQContent() {
           Still have questions? Contact us:{' '}
           <a
             href="mailto:crlapples19@gmail.com?subject=FAQ%20Query"
-            className="inline-block text-blue-600 dark:text-blue-400 hover:underline"
+            className="inline-block hover:underline"
             aria-label="Contact support via email"
           >
-           <EnvelopeIcon className="h-6 w-6 align-middle" />
+           <EnvelopeIcon className="h-6 w-6 -mb-[7px] align-middle" />
           </a>
         </p>
       </div>
@@ -101,10 +101,10 @@ export default function FAQContent() {
         Still have questions? Contact us:{' '}
         <a
           href="mailto:crlapples19@gmail.com?subject=FAQ%20Query"
-          className="inline-block text-blue-600 dark:text-blue-400 hover:underline"
+          className="inline-block hover:underline"
           aria-label="Contact support via email"
         >
-          <EnvelopeIcon className="h-6 w-6 align-middle" />
+          <EnvelopeIcon className="h-6 w-6 -mb-[7px] align-middle" />
         </a>
       </p>
     </div>
