@@ -1,34 +1,37 @@
-'use client';
-// import CartModal from 'components/cart/modal'; // Remove static import
+"use client";
+
 import LogoSquare from 'components/logo-square';
 import Link from 'next/link';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { Menu } from 'lib/types';
 import MobileMenu from './mobile-menu';
 import Search, { SearchSkeleton } from './search';
-import dynamic from 'next/dynamic'; // Import dynamic
-import OpenCart from 'components/cart/open-cart'; // Import OpenCart
+import dynamic from 'next/dynamic';
+import OpenCart from 'components/cart/open-cart';
 
+// Dynamically import CartModal
 const CartModal = dynamic(() => import('components/cart/modal'), {
-  ssr: false, // Prevent server-side rendering of CartModal
+  ssr: false,
 });
 
-const SiteNameDiv = dynamic(() => Promise.resolve(({ siteName }: { siteName: string | undefined }) => (
-  <div className="ml-2 flex-none text-sm font-medium uppercase md:hidden lg:block">
-    {siteName}
+// Define SiteNameDiv as a regular component (no dynamic import)
+const SiteNameDiv = ({ siteName }: { siteName: string | undefined }) => (
+  <div className="ml-2 flex-none text-sm font-medium uppercase lg:block">
+    {siteName || 'NAME OF STORE'} {/* Fallback to 'My Store' if undefined */}
   </div>
-)), { ssr: false });
+);
 
-
-const { SITE_NAME } = process.env;
+// Use environment variable with fallback
+const SITE_NAME = process.env.SITE_NAME || 'My Store';
 
 export function Navbar() {
   const menu: Menu[] = [
     { title: 'All', path: '/search' },
-    { title: 'Shirts', path: '/search/shirts' }
+    { title: 'Shirts', path: '/search/shirts' },
   ];
 
-  // Remove isClient state and useEffect
+  // Debugging: Log SITE_NAME to verify its value
+  console.log('SITE_NAME:', SITE_NAME);
 
   return (
     <nav className="relative flex items-center justify-between p-4 lg:px-6">
@@ -45,7 +48,7 @@ export function Navbar() {
             className="mr-2 flex w-full items-center justify-center md:w-auto lg:mr-6"
           >
             <LogoSquare />
- <SiteNameDiv siteName={SITE_NAME} />
+            <SiteNameDiv siteName={SITE_NAME} />
           </Link>
           {menu.length ? (
             <ul className="hidden gap-6 text-sm md:flex md:items-center">
@@ -69,7 +72,7 @@ export function Navbar() {
           </Suspense>
         </div>
         <div className="flex justify-end md:w-1/3">
-          <CartModal /> {/* Render the dynamically imported CartModal */}
+          <CartModal />
         </div>
       </div>
     </nav>
