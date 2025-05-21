@@ -3,7 +3,7 @@ import Footer from 'components/layout/footer'
 
 export default function ShippingAndReturns() {
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white flex flex-col items-center justify-center p-4">
       <Head>
         <title>Shipping and Return Policy - [Your Company Name]</title>
         <meta name="description" content="Shipping and Return Policy for [Your Company Name]" />
