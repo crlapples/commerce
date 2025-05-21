@@ -63,10 +63,14 @@ export default function FAQContent() {
           </div>
         ))}
         <p className="mt-6 text-sm">
-          Still have questions? Contact us: {' '}
-          <a href="mailto:crlapples19@gmail.com?subject=FAQ%20Query">
-            <EnvelopeIcon className="h-5 w-5" />
-          </a>.
+          Still have questions? Contact us:{' '}
+          <a
+            href="mailto:crlapples19@gmail.com?subject=FAQ%20Query"
+            className="inline-block text-blue-600 dark:text-blue-400 hover:underline"
+            aria-label="Contact support via email"
+          >
+           <EnvelopeIcon className="h-6 w-6 align-middle" />
+          </a>
         </p>
       </div>
     );
@@ -95,9 +99,13 @@ export default function FAQContent() {
       ))}
       <p className="mt-6 text-sm">
         Still have questions? Contact us:{' '}
-        <a href="mailto:crlapples19@gmail.com?subject=FAQ%20Query">
-            <EnvelopeIcon className="h-5 w-5" />
-        </a>.
+        <a
+          href="mailto:crlapples19@gmail.com?subject=FAQ%20Query"
+          className="inline-block text-blue-600 dark:text-blue-400 hover:underline"
+          aria-label="Contact support via email"
+        >
+          <EnvelopeIcon className="h-6 w-6 align-middle" />
+        </a>
       </p>
     </div>
   );
