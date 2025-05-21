@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { EnvelopeIcon } from '@heroicons/react/24/outline'
 
 export default function FAQContent() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -49,12 +50,12 @@ export default function FAQContent() {
 
   if (!isMounted) {
     return (
-      <div className="max-w-4xl w-full bg-white dark:bg-black text-black dark:text-white border border-neutral-200 dark:border-neutral-800 rounded-lg py-3 px-8 md:py-8 md:px-8 my-auto">
+      <div className="max-w-4xl w-full bg-white dark:bg-black text-black dark:text-white border-neutral-200 dark:border-neutral-800 rounded-lg py-3 px-8 md:py-8 md:px-8 my-auto">
         <h1 className="text-3xl font-bold mb-4 text-center">Frequently Asked Questions</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Find answers to common questions about shopping with [Your Company Name].</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 px-2 mb-6">Find answers to common questions about shopping with [Your Company Name].</p>
         {faqs.map((faq, index) => (
           <div key={index} className="mb-4">
-            <div className="w-full flex justify-between items-center text-left text-lg font-semibold text-black dark:text-white py-2">
+            <div className="w-full flex justify-between items-center text-left text-lg font-semibold text-black dark:text-white p-2">
               <span>{faq.question}</span>
               <span className="text-xl">+</span>
             </div>
@@ -62,9 +63,9 @@ export default function FAQContent() {
           </div>
         ))}
         <p className="mt-6 text-sm">
-          Still have questions? Contact us at{' '}
-          <a href="mailto:crlapples19@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline">
-            crlapples19@gmail.com
+          Still have questions? Contact us: {' '}
+          <a href="mailto:crlapples19@gmail.com?subject=FAQ%20Query">
+            <EnvelopeIcon className="h-5 w-5" />
           </a>.
         </p>
       </div>
@@ -72,20 +73,20 @@ export default function FAQContent() {
   }
 
   return (
-    <div className="max-w-4xl w-full bg-white dark:bg-black text-black dark:text-white border border-neutral-200 dark:border-neutral-800 rounded-lg py-3 px-8 md:py-8 md:px-8 my-auto">
+    <div className="max-w-4xl w-full bg-white dark:bg-black text-black dark:text-white border-neutral-200 dark:border-neutral-800 rounded-lg py-3 px-8 md:py-8 md:px-8 my-auto">
       <h1 className="text-3xl font-bold mb-4 text-center">Frequently Asked Questions</h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Find answers to common questions about shopping with [Your Company Name].</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 px-2">Find answers to common questions about shopping with [Your Company Name].</p>
       {faqs.map((faq, index) => (
         <div key={index} className="mb-4">
           <button
-            className="w-full flex justify-between items-center text-left text-lg font-semibold text-black dark:text-white py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full flex justify-between items-center text-left text-lg font-semibold text-black dark:text-white p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:cursor-pointer"
             onClick={() => toggleFAQ(index)}
           >
             <span>{faq.question}</span>
             <span className="text-xl">{openIndex === index ? '-' : '+'}</span>
           </button>
           {openIndex === index && (
-            <div className="mt-2 text-gray-700 dark:text-gray-300 pl-4">
+            <div className="mt-2 text-gray-700 dark:text-gray-300 px-2">
               {faq.answer}
             </div>
           )}
@@ -93,9 +94,9 @@ export default function FAQContent() {
         </div>
       ))}
       <p className="mt-6 text-sm">
-        Still have questions? Contact us at{' '}
-        <a href="mailto:crlapples19@gmail.com" className="text-blue-600 dark:text-blue-400 hover:underline">
-          crlapples19@gmail.com
+        Still have questions? Contact us:{' '}
+        <a href="mailto:crlapples19@gmail.com?subject=FAQ%20Query">
+            <EnvelopeIcon className="h-5 w-5" />
         </a>.
       </p>
     </div>
