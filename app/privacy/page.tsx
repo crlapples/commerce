@@ -3,12 +3,12 @@ import Footer from 'components/layout/footer'
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen min-w-screen bg-white dark:bg-black text-black dark:text-white flex flex-col items-center justify-center">
       <Head>
         <title>Privacy Policy - [Your Company Name]</title>
         <meta name="description" content="Privacy Policy for [Your Company Name]" />
       </Head>
-      <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8">
+      <div className="max-w-4xl w-full bg-white dark:bg-black dark:text-white shadow-lg rounded-lg py-8 px-30">
         <h1 className="text-3xl font-bold mb-4 text-center">Privacy Policy</h1>
         <p className="text-sm text-gray-500 mb-2">Last Updated: May 20, 2025</p>
         <p className="mb-4">[Your Company Name] ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you visit our website [Your Website URL] or make a purchase from us.</p>

@@ -8,7 +8,7 @@ export default function ShippingAndReturns() {
         <title>Shipping and Return Policy - [Your Company Name]</title>
         <meta name="description" content="Shipping and Return Policy for [Your Company Name]" />
       </Head>
-      <div className="max-w-4xl w-full bg-white shadow-lg rounded-lg p-8">
+      <div className="max-w-4xl w-full bg-white dark:bg-black text-black dark:text-white shadow-lg rounded-lg py-8 px-30">
         <h1 className="text-3xl font-bold mb-4 text-center">Shipping and Return Policy</h1>
         <p className="text-sm text-gray-500 mb-2">Last Updated: May 20, 2025</p>
         <p className="mb-4">This policy outlines shipping and return processes for [Your Company Name].</p>
