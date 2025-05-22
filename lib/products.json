@@ -33,5 +33,34 @@
     "variant": {
       "color": "white"
     }
+  },
+  {
+    "id": "4",
+    "name": "World of Warcraft Horde Pride T-Shirt",
+    "description": "Proudly display your loyalty to Azeroth's mightiest faction with this premium Horde t-shirt! Featuring the iconic crimson emblem on soft, breathable fabric, this World of Warcraft tee lets you declare 'For the Horde!' in style. Perfect for raids, conventions, or casual wear. Limited stock - claim your battle gear today!",
+    "price": "30.00",
+    "images": [
+      "/shirt1.png",
+      "/shirt2.png",
+      "/shirt3.png"
+    ],
+    "variant": {
+      "color": ["black", "white", "beige"],
+      "sizes": ["S", "M", "L"]
+    }
+  },
+  {
+    "id": "5",
+    "name": "Alliance Champion T-Shirt",
+    "description": "Represent the noble Alliance in this high-quality, World of Warcraft t-shirt! Boldly display the blue lion crest on ultra-comfortable fabric, perfect for adventurers, PvP battles, or showing your pride at gaming events. Join other heroes within your favorite faction!",
+    "price": "30.00",
+    "images": [
+      "/images/shirt-alliance-1.jpg",
+      "/images/shirt-alliance-2.jpg"
+    ],
+    "variant": {
+      "color": "blue",
+      "sizes": ["S", "M", "L", "XL"]
+    }
   }
 ]
