@@ -39,13 +39,15 @@ export function normalizeVariants(product: Product): Product {
 }
 
 // Utility function to find a variant
-export function findVariant(product: Product, color?: string, size?: string): Variant | undefined {
-  if (!product.variants) return undefined;
+export function findVariant(product: Product, color?: string, size?: string): Variant {
+  if (!product.variants) {
+    return getDefaultVariant(product);
+  }
   
   return product.variants.find(variant => 
     (!color || variant.color === color) && 
     (!size || variant.size === size)
-  );
+  ) || getDefaultVariant(product); // Fallback to default
 }
 
 // Utility to get the default variant

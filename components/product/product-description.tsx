@@ -1,6 +1,8 @@
+// components/product/product-description.tsx
 'use client';
 
 import { useState } from 'react';
+import clsx from 'clsx';
 import { AddToCart } from 'components/cart/add-to-cart';
 import Price from 'components/price';
 import Prose from 'components/prose';
@@ -14,20 +16,31 @@ export function ProductDescription({
   product: Product;
   onVariantChange?: (variant: Variant) => void;
 }) {
-  // Default to the first variant
   const [selectedVariant, setSelectedVariant] = useState<Variant>(getDefaultVariant(product));
 
-  // Handle variant changes
   const handleVariantChange = (newVariant: Variant) => {
+    console.log('Selected variant:', newVariant);
     setSelectedVariant(newVariant);
     if (onVariantChange) {
-      onVariantChange(newVariant); // Trigger image update
+      onVariantChange(newVariant);
     }
   };
 
-  // Get unique colors and sizes
-  const colors = Array.from(new Set(product.variants?.map((v) => v.color))) || ['default'];
-  const sizes = Array.from(new Set(product.variants?.map((v) => v.size).filter((s): s is string => !!s))) || ['one-size'];
+  // Define options for color and size
+  const options = [
+    {
+      id: 'color',
+      name: 'Color',
+      values: Array.from(new Set(product.variants?.map((v) => v.color))) || ['default'],
+    },
+    {
+      id: 'size',
+      name: 'Size',
+      values: Array.from(new Set(product.variants?.map((v) => v.size).filter((s): s is string => !!s))) || ['one-size'],
+    },
+  ].filter((option) => option.values.length > 0);
+
+  console.log('Product:', product.name, 'Variants:', product.variants, 'Options:', options);
 
   return (
     <>
@@ -37,60 +50,48 @@ export function ProductDescription({
           <Price amount={product.price} currencyCode="USD" />
         </div>
         {/* Variant Selectors */}
-        {product.variants && product.variants.length > 0 && (
+        {product.variants && product.variants.length > 0 ? (
           <div className="mt-4 space-y-4">
-            {/* Color Selector */}
-            {colors.length > 1 && (
-              <div>
-                <label htmlFor="color" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Color
-                </label>
-                <select
-                  id="color"
-                  className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-800 dark:text-white sm:w-auto sm:text-sm"
-                  value={selectedVariant.color}
-                  onChange={(e) => {
-                    const newColor = e.target.value;
-                    const newVariant = findVariant(product, newColor, selectedVariant.size);
-                    if (newVariant) {
-                      handleVariantChange(newVariant);
-                    }
-                  }}
-                >
-                  {colors.map((color) => (
-                    <option key={color} value={color}>
-                      {color}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-            {/* Size Selector */}
-            {sizes.length > 1 && (
-              <div>
-                <label htmlFor="size" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Size
-                </label>
-                <select
-                  id="size"
-                  className="mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-blue-500 focus:outline-none focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-800 dark:text-white sm:w-auto sm:text-sm"
-                  value={selectedVariant.size || 'one-size'}
-                  onChange={(e) => {
-                    const newSize = e.target.value;
-                    const newVariant = findVariant(product, selectedVariant.color, newSize);
-                    if (newVariant) {
-                      handleVariantChange(newVariant);
-                    }
-                  }}
-                >
-                  {sizes.map((size) => (
-                    <option key={size} value={size}>
-                      {size}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+            {options.map((option) => (
+              <dl key={option.id} className="mb-8">
+                <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
+                <dd className="flex flex-wrap gap-3">
+                  {option.values.map((value) => {
+                    const optionNameLowerCase = option.name.toLowerCase();
+                    const isActive = selectedVariant[optionNameLowerCase as 'color' | 'size'] === value;
+
+                    return (
+                      <button
+                        key={value}
+                        type="button"
+                        title={`${option.name} ${value}`}
+                        onClick={() => {
+                          const newVariant = findVariant(
+                            product,
+                            optionNameLowerCase === 'color' ? value : selectedVariant.color,
+                            optionNameLowerCase === 'size' ? value : selectedVariant.size
+                          );
+                          handleVariantChange(newVariant); // findVariant always returns Variant
+                        }}
+                        className={clsx(
+                          'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
+                          {
+                            'cursor-default ring-2 ring-blue-600': isActive,
+                            'ring-1 ring-transparent transition duration-300 ease-in-out hover:ring-blue-600': !isActive,
+                          }
+                        )}
+                      >
+                        {value}
+                      </button>
+                    );
+                  })}
+                </dd>
+              </dl>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-4 text-sm text-gray-500 dark:text-neutral-400">
+            No variants available
           </div>
         )}
       </div>
