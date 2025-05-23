@@ -145,7 +145,7 @@ export default function CartModal() {
                               <DeleteItemButton item={item} optimisticUpdate={updateCartItem} />
                             </div>
                             <div className="flex flex-row">
-                              <div className="relative h-fit overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+                              <div className="relative h-fit py-3 overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                                 <Image
                                   className="object-cover"
                                   width={64}
