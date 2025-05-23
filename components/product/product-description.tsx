@@ -6,6 +6,7 @@ import { AddToCart } from 'components/cart/add-to-cart';
 import Price from 'components/price';
 import Prose from 'components/prose';
 import { Product, Variant } from 'lib/types';
+import { useProduct } from 'components/product/product-context';
 
 export function ProductDescription({
   product,
@@ -14,16 +15,23 @@ export function ProductDescription({
   product: Product;
   onVariantChange?: (variant: Variant) => void;
 }) {
+  const { updateImage, updateOption } = useProduct();
+
   // Safely initialize selectedVariant with proper fallbacks
   const [selectedVariant, setSelectedVariant] = useState<Variant>({
     id: product.id,
     color: product.variant?.colors?.[0] || '',
     size: product.variant?.sizes?.[0] || '',
-    image: product.images?.[0] || ''
+    image: product.images?.[0] || '',
   });
 
-  const handleVariantChange = (newVariant: Variant) => {
+  const handleVariantChange = (newVariant: Variant, imageIndex?: string) => {
     setSelectedVariant(newVariant);
+    if (imageIndex !== undefined) {
+      updateImage(imageIndex); // Update the image index in the context
+    }
+    newVariant.color ? updateOption('color', newVariant.color) : updateOption('color', ''); // Update the color in the context
+    newVariant.size ? updateOption('size', newVariant.size) : updateOption('size', ''); // Update the size in the context
     onVariantChange?.(newVariant);
   };
 
@@ -38,7 +46,7 @@ export function ProductDescription({
       id: 'size',
       name: 'Size',
       values: product.variant?.sizes || [],
-    }
+    },
   ];
 
   return (
@@ -48,7 +56,7 @@ export function ProductDescription({
         <div className="mt-[8px] mr-auto w-auto rounded-full bg-blue-600 p-2 text-sm text-white">
           <Price amount={product.price} currencyCode="USD" />
         </div>
-        
+
         {product.variant ? (
           <div className="mt-4 space-y-4">
             {options.map((option) => (
@@ -64,14 +72,21 @@ export function ProductDescription({
                         type="button"
                         title={`${option.name} ${value}`}
                         onClick={() => {
+                          const imageIndex =
+                            option.id === 'color'
+                              ? (product.variant?.colors?.indexOf(value) ?? 0).toString()
+                              : selectedVariant.image;
                           const newVariant = {
                             ...selectedVariant,
                             [option.id]: value,
-                            image: option.id === 'color' 
-                              ? product.images[product.variant?.colors?.indexOf(value) ?? 0] || product.images[0]
-                              : selectedVariant.image
+                            image:
+                              option.id === 'color'
+                                ? product.images[product.variant?.colors?.indexOf(value) ?? 0] ||
+                                  product.images[0] ||
+                                  ''
+                                : selectedVariant.image,
                           };
-                          handleVariantChange(newVariant);
+                          handleVariantChange(newVariant, option.id === 'color' ? imageIndex : undefined);
                         }}
                         className={clsx(
                           'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
@@ -90,12 +105,10 @@ export function ProductDescription({
             ))}
           </div>
         ) : (
-          <div className="mt-4 text-sm text-gray-500 dark:text-neutral-400">
-            No variants available
-          </div>
+          <div className="mt-4 text-sm text-gray-500 dark:text-neutral-400">No variants available</div>
         )}
       </div>
-      
+
       {product.description && (
         <Prose className="mb-6 text-sm leading-tight dark:text-white/[60%]" html={product.description} />
       )}

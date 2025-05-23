@@ -45,7 +45,7 @@
       "/shirt3.png"
     ],
     "variant": {
-      "color": ["Black", "White", "Beige"],
+      "colors": ["Black", "White", "Beige"],
       "sizes": ["S", "M", "L"]
     }
   },
