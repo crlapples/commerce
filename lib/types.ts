@@ -1,17 +1,33 @@
-export type Product = {
+// lib/types.ts
+export interface Variant {
+  id: string;
+  color: string;
+  size?: string;
+  image: string | undefined;
+}
+
+export interface Product {
   id: string;
   collection?: string;
   name: string;
-  description: string;
+  description?: string;
   price: string;
   images: string[];
-  variant?: { color?: 'white' | 'black' };
-};
+  variant?: {
+    colors?: string[];
+    sizes?: string[];
+  };
+  variants?: Variant[]; 
+}
 
 export type CartItem = {
   productId: string;
   quantity: number;
-  variant?: { color?: 'white' | 'black' };
+  variant?: {
+    color?: string;
+    size?: string;
+    image?: string;
+  };
   price?: number;
 };
 

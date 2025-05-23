@@ -36,7 +36,7 @@
   },
   {
     "id": "4",
-    "name": "World of Warcraft Horde Pride T-Shirt",
+    "name": "World of Warcraft - Horde T-Shirt",
     "description": "Proudly display your loyalty to Azeroth's mightiest faction with this premium Horde t-shirt! Featuring the iconic crimson emblem on soft, breathable fabric, this World of Warcraft tee lets you declare 'For the Horde!' in style. Perfect for raids, conventions, or casual wear. Limited stock - claim your battle gear today!",
     "price": "30.00",
     "images": [
@@ -45,7 +45,7 @@
       "/shirt3.png"
     ],
     "variant": {
-      "color": ["black", "white", "beige"],
+      "color": ["Black", "White", "Beige"],
       "sizes": ["S", "M", "L"]
     }
   },
