@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== 'production' && !paypalClientId) {
 
 async function getProductsFromJson(): Promise<Product[]> {
   try {
-    const res = products as Product[]
+    const res = products as Product[];
     if (!res) {
       throw new Error(`Failed to fetch products: ${res}`);
     }
@@ -150,8 +150,8 @@ export default function CartModal() {
                                   className="h-full w-full object-cover"
                                   width={64}
                                   height={64}
-                                  alt={product.name}
-                                  src={product.images[0] || '/placeholder-image.jpg'}
+                                  alt={item.variant?.color ? `${product.name} - ${item.variant.color}` : product.name}
+                                  src={item.variant?.image || product.images[0] || '/placeholder-image.jpg'}
                                 />
                               </div>
                               <Link
@@ -164,6 +164,11 @@ export default function CartModal() {
                                   {item.variant?.color ? (
                                     <p className="text-sm text-neutral-500 dark:text-neutral-400">
                                       Color: {item.variant.color}
+                                    </p>
+                                  ) : null}
+                                  {item.variant?.size ? (
+                                    <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                      Size: {item.variant.size}
                                     </p>
                                   ) : null}
                                 </div>
@@ -222,7 +227,7 @@ export default function CartModal() {
                     <PayPalButtons
                       style={{
                         layout: 'vertical',
-                        color: colorScheme, // 'white' for dark mode, 'black' for light mode
+                        color: colorScheme,
                         shape: 'rect',
                         label: 'checkout',
                         tagline: false
@@ -235,7 +240,7 @@ export default function CartModal() {
                               if (!product) return null;
                               return {
                                 name: product.name,
-                                price: Number(product.price).toFixed(2), // Ensure price is a string with 2 decimal places
+                                price: Number(product.price).toFixed(2),
                                 quantity: item.quantity,
                                 variant: item.variant
                               };
@@ -245,7 +250,7 @@ export default function CartModal() {
                           const response = await fetch('/api/paypal/create-order', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ cartItems: orderItems }), // Match the expected "cartItems" key
+                            body: JSON.stringify({ cartItems: orderItems }),
                           });
                       
                           if (!response.ok) {
@@ -257,10 +262,10 @@ export default function CartModal() {
                             throw new Error('No order ID returned from PayPal');
                           }
                       
-                          return order.orderID; // Return the order ID
+                          return order.orderID;
                         } catch (error) {
                           console.error('Error in createOrder:', error);
-                          throw error; // Let PayPal SDK handle the error
+                          throw error;
                         }
                       }}
                       onApprove={async (data) => {
@@ -296,4 +301,3 @@ export default function CartModal() {
     </PayPalScriptProvider>
   );
 }
-
