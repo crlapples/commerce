@@ -145,9 +145,9 @@ export default function CartModal() {
                               <DeleteItemButton item={item} optimisticUpdate={updateCartItem} />
                             </div>
                             <div className="flex flex-row">
-                              <div className="relative h-16 w-16 overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+                              <div className="relative h-fit overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                                 <Image
-                                  className="h-full w-full object-cover"
+                                  className="object-cover"
                                   width={64}
                                   height={64}
                                   alt={item.variant?.color ? `${product.name} - ${item.variant.color}` : product.name}
@@ -161,16 +161,6 @@ export default function CartModal() {
                               >
                                 <div className="flex flex-1 flex-col text-base">
                                   <span className="leading-tight">{product.name}</span>
-                                  {item.variant?.color ? (
-                                    <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                      Color: {item.variant.color}
-                                    </p>
-                                  ) : null}
-                                  {item.variant?.size ? (
-                                    <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                      Size: {item.variant.size}
-                                    </p>
-                                  ) : null}
                                 </div>
                               </Link>
                             </div>
