@@ -1,6 +1,10 @@
 import { ReadonlyURLSearchParams } from 'next/navigation';
 import { Product, Variant } from './types';
 
+if (typeof window !== 'undefined') {
+  window.globalColorIndex = 100;
+}
+
 export const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   : 'http://localhost:3000';

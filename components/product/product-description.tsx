@@ -70,7 +70,9 @@ export function ProductDescription({
                             size: option.name === "Size" ? value : selectedVariant.size,
                             image: product.images[product.variant?.colors?.indexOf(value)] ? product.images[product.variant?.colors?.indexOf(value)] : product.images[0]
                           };
-                          globalColorIndex = product.variant?.colors?.indexOf(newVariant.color);
+                          if (typeof window !== undefined) {
+                            window.globalColorIndex = product.variant?.colors?.indexOf(newVariant.color);
+                          }
                           handleVariantChange(newVariant); // findVariant always returns Variant
                         }}
                         className={clsx(

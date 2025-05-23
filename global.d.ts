@@ -1,4 +1,6 @@
-declare global {
-    let globalColorIndex: number;
-}
 export {};
+declare global {
+    interface Window {
+        globalColorIndex: number;
+    }
+}

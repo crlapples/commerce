@@ -11,11 +11,16 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
   const { state, updateImage } = useProduct();
   const updateURL = useUpdateURL();
   const imageIndex = state.image ? parseInt(state.image) : 0;
-  globalColorIndex = 0;
 
   useEffect(() => {
-    updateURL(updateImage(globalColorIndex.toString()));
-  }, [globalColorIndex]);
+    if (typeof window !== undefined) {
+      window.globalColorIndex = 0;
+    }
+  }, [])
+
+  useEffect(() => {
+    updateURL(updateImage(window.globalColorIndex.toString()));
+  }, [window.globalColorIndex]);
 
   const nextImageIndex = imageIndex + 1 < images.length ? imageIndex + 1 : 0;
   const previousImageIndex = imageIndex === 0 ? images.length - 1 : imageIndex - 1;
