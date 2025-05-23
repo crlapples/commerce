@@ -5,14 +5,29 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { GridTileImage } from 'components/grid/tile';
 import { useProduct, useUpdateURL } from 'components/product/product-context';
 import Image from 'next/image';
+import { Product } from 'lib/types';
 
-export function Gallery({ images }: { images: { src: string; altText: string }[] }) {
+export function Gallery({ images, product }: { images: { src: string; altText: string }[]; product: Product }) {
   const { state, updateImage } = useProduct();
   const updateURL = useUpdateURL();
-  const imageIndex = state.image ? parseInt(state.image) : 0;
+  const imageIndex = state.image ? parseInt(state.image, 10) : 0;
+  const isColorSelected = !!state.color; // Check if a color is explicitly selected
 
-  const nextImageIndex = imageIndex + 1 < images.length ? imageIndex + 1 : 0;
-  const previousImageIndex = imageIndex === 0 ? images.length - 1 : imageIndex - 1;
+  // Ensure imageIndex is valid
+  const validImageIndex = Math.min(Math.max(imageIndex, 0), images.length - 1);
+  const nextImageIndex = validImageIndex + 1 < images.length ? validImageIndex + 1 : 0;
+  const previousImageIndex = validImageIndex === 0 ? images.length - 1 : validImageIndex - 1;
+
+  // Reset imageIndex to color's image when color changes
+  useEffect(() => {
+    if (isColorSelected && product.variant?.colors) {
+      const colorIndex = product.variant.colors.indexOf(state.color as string) ?? 0;
+      if (colorIndex !== validImageIndex && colorIndex >= 0 && colorIndex < images.length) {
+        const newState = updateImage(colorIndex.toString());
+        updateURL(newState);
+      }
+    }
+  }, [state.color, validImageIndex, updateImage, updateURL, product.variant?.colors]);
 
   const buttonClassName =
     'h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center';
@@ -20,18 +35,18 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
   return (
     <form>
       <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden">
-        {images[imageIndex] && (
+        {images[validImageIndex] && (
           <Image
             className="h-full w-full object-contain"
             fill
             sizes="(min-width: 1024px) 66vw, 100vw"
-            alt={images[imageIndex]?.altText as string}
-            src={images[imageIndex]?.src as string}
+            alt={images[validImageIndex]?.altText ?? ''}
+            src={images[validImageIndex]?.src ?? ''}
             priority={true}
           />
         )}
 
-        {images.length > 1 ? (
+        {images.length > 1 && !isColorSelected ? (
           <div className="absolute bottom-[15%] flex w-full justify-center">
             <div className="mx-auto flex h-11 items-center rounded-full border border-white bg-neutral-50/80 text-neutral-500 backdrop-blur-sm dark:border-black dark:bg-neutral-900/80">
               <button
@@ -63,7 +78,7 @@ export function Gallery({ images }: { images: { src: string; altText: string }[]
       {images.length > 1 ? (
         <ul className="my-12 flex items-center flex-wrap justify-center gap-2 overflow-auto py-1 lg:mb-0">
           {images.map((image, index) => {
-            const isActive = index === imageIndex;
+            const isActive = index === validImageIndex;
 
             return (
               <li key={image.src} className="h-20 w-20">

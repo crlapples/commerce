@@ -1,11 +1,13 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { createContext, useContext, useMemo, useState } from 'react';
+import React, { createContext, useContext, useMemo, useOptimistic } from 'react';
 
 export interface ProductVariant {
   color: string;
 }
+
+
 
 type ProductState = {
   [key: string]: string;
@@ -32,25 +34,31 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     return params;
   };
 
-  const [state, setState] = useState<ProductState>(getInitialState());
+  const [state, setOptimisticState] = useOptimistic(
+    getInitialState(),
+    (prevState: ProductState, update: ProductState) => ({
+      ...prevState,
+      ...update
+    })
+  );
 
   const updateOption = (name: string, value: string) => {
-    const newState = { ...state, [name]: value };
-    setState(newState);
-    return newState;
+    const newState = { [name]: value };
+    setOptimisticState(newState);
+    return { ...state, ...newState };
   };
 
   const updateImage = (index: string) => {
-    const newState = { ...state, image: index };
-    setState(newState);
-    return newState;
+    const newState = { image: index };
+    setOptimisticState(newState);
+    return { ...state, ...newState };
   };
 
   const value = useMemo(
     () => ({
       state,
       updateOption,
-      updateImage,
+      updateImage
     }),
     [state]
   );

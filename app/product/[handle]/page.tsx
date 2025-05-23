@@ -93,6 +93,7 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
                   src: image,
                   altText: product.name // Using product name as alt text for now
                 })) as any[]} // TODO: Update Gallery component to accept string[] for images
+                product={product}
               />
             </Suspense>
           </div>
