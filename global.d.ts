@@ -1,4 +1,4 @@
 declare global {
-    let globalColorIndex: number;
+    let globalColorIndex: number = 0;
 }
 export {};
