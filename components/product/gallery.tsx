@@ -10,24 +10,22 @@ import { Product } from 'lib/types';
 export function Gallery({ images, product }: { images: { src: string; altText: string }[]; product: Product }) {
   const { state, updateImage } = useProduct();
   const updateURL = useUpdateURL();
-
-  // Prioritize color-based index when color is selected
-  const imageIndex = state.color && product.variant?.colors
-    ? product.variant.colors.indexOf(state.color) >= 0
-      ? product.variant.colors.indexOf(state.color)
-      : 0
-    : state.image
-      ? parseInt(state.image, 10)
-      : 0;
-
-  const isColorSelected = !!state.color;
+  const imageIndex = state.image ? parseInt(state.image, 10) : 0;
+  const isColorSelected = !!state.color; // Check if a color is explicitly selected
 
   // Ensure imageIndex is valid
   const validImageIndex = Math.min(Math.max(imageIndex, 0), images.length - 1);
   const nextImageIndex = validImageIndex + 1 < images.length ? validImageIndex + 1 : 0;
   const previousImageIndex = validImageIndex === 0 ? images.length - 1 : validImageIndex - 1;
 
-  // Debug state and index
+  // Update URL to reflect validImageIndex
+  useEffect(() => {
+    const newState = { ...state, image: validImageIndex.toString() };
+    updateURL(newState);
+    console.log('Gallery URL update:', { image: validImageIndex, url: `?image=${validImageIndex}` });
+  }, [validImageIndex, state, updateURL]);
+
+  // Debug state changes
   useEffect(() => {
     console.log('Gallery state:', {
       image: state.image,
@@ -62,6 +60,7 @@ export function Gallery({ images, product }: { images: { src: string; altText: s
                 formAction={() => {
                   const newState = updateImage(previousImageIndex.toString());
                   updateURL(newState);
+                  console.log('Previous button:', { newImage: previousImageIndex });
                 }}
                 aria-label="Previous product image"
                 className={buttonClassName}
@@ -73,6 +72,7 @@ export function Gallery({ images, product }: { images: { src: string; altText: s
                 formAction={() => {
                   const newState = updateImage(nextImageIndex.toString());
                   updateURL(newState);
+                  console.log('Next button:', { newImage: nextImageIndex });
                 }}
                 aria-label="Next product image"
                 className={buttonClassName}
@@ -95,6 +95,7 @@ export function Gallery({ images, product }: { images: { src: string; altText: s
                   formAction={() => {
                     const newState = updateImage(index.toString());
                     updateURL(newState);
+                    console.log('Thumbnail click:', { newImage: index });
                   }}
                   aria-label="Select product image"
                   className="h-full w-full"
