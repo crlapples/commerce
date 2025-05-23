@@ -1,4 +1,3 @@
-// app/api/paypal/create-order/route.ts
 import paypal from '@paypal/checkout-server-sdk';
 import { NextResponse } from 'next/server';
 
@@ -35,21 +34,30 @@ export async function POST(request: Request) {
   const client = createClient();
 
   try {
-    const { cartItems } = await request.json();
+    const { cartItems, total } = await request.json();
 
     if (!cartItems || !Array.isArray(cartItems)) {
       return NextResponse.json({ error: 'Invalid cart items' }, { status: 400 });
     }
 
+    // Validate cartItems structure and calculate total
     const orderTotal = cartItems
-      .reduce((total: number, item: { name: string; price: string; quantity: number }) => {
-        const price = parseFloat(item.price);
+      .reduce((sum: number, item: any) => {
+        const price = parseFloat(item.unit_amount?.value);
         if (isNaN(price)) {
           throw new Error(`Invalid price for item: ${item.name}`);
         }
-        return total + price * item.quantity;
+        return sum + price * parseInt(item.quantity);
       }, 0)
       .toFixed(2);
+
+    // Validate provided total matches calculated total
+    if (parseFloat(total).toFixed(2) !== orderTotal) {
+      return NextResponse.json(
+        { error: `Total mismatch: expected ${orderTotal}, got ${total}` },
+        { status: 400 }
+      );
+    }
 
     const orderRequest = new paypal.orders.OrdersCreateRequest();
     orderRequest.prefer('return=representation');
@@ -67,23 +75,24 @@ export async function POST(request: Request) {
               },
             },
           },
-          items: cartItems.map(
-            (item: { name: string; price: string; quantity: number }) => ({
-              name: item.name,
-              unit_amount: {
-                currency_code: 'USD',
-                value: parseFloat(item.price).toFixed(2),
-              },
-              quantity: item.quantity.toString(),
-            })
-          ),
+          items: cartItems.map((item: any) => ({
+            name: item.name,
+            description: item.description || undefined, // Include variant details (e.g., "Color: Blue, Size: M")
+            sku: item.sku || undefined, // Unique SKU (e.g., "1-blue-M")
+            unit_amount: {
+              currency_code: item.unit_amount.currency_code,
+              value: item.unit_amount.value,
+            },
+            quantity: item.quantity,
+            custom_id: item.custom_id || undefined, // Image URL (e.g., "/images/blue.jpg")
+          })),
         },
       ],
     });
 
-    console.log('Creating PayPal order with total:', orderTotal);
+    console.log('Creating PayPal order with payload:', JSON.stringify(orderRequest.body, null, 2));
     const response = await client.execute(orderRequest);
-    console.log('PayPal order created:', response.result.id);
+    console.log('PayPal order created:', response.result.id, 'Details:', response.result);
     return NextResponse.json({ orderID: response.result.id });
   } catch (error: any) {
     console.error('PayPal order error:', error);

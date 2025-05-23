@@ -228,11 +228,23 @@ export default function CartModal() {
                             .map((item) => {
                               const product = products.find((p) => p.id === item.productId);
                               if (!product) return null;
+                              // Format variant details for description
+                              const variantDescription = [
+                                item.variant?.color ? `Color: ${item.variant.color}` : '',
+                                item.variant?.size ? `Size: ${item.variant.size}` : ''
+                              ]
+                                .filter(Boolean)
+                                .join(', ');
                               return {
                                 name: product.name,
-                                price: Number(product.price).toFixed(2),
-                                quantity: item.quantity,
-                                variant: item.variant
+                                description: variantDescription || undefined,
+                                sku: `${product.id}-${item.variant?.color || 'default'}-${item.variant?.size || 'default'}`,
+                                unit_amount: {
+                                  currency_code: 'USD',
+                                  value: Number(product.price).toFixed(2)
+                                },
+                                quantity: item.quantity.toString(),
+                                custom_id: item.variant?.image || undefined // Store image URL in custom_id
                               };
                             })
                             .filter((item): item is NonNullable<typeof item> => item !== null);
@@ -240,7 +252,11 @@ export default function CartModal() {
                           const response = await fetch('/api/paypal/create-order', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ cartItems: orderItems }),
+                            body: JSON.stringify({
+                              cartItems: orderItems,
+                              // Include total for validation
+                              total: Number(cart.totalPrice).toFixed(2)
+                            })
                           });
                       
                           if (!response.ok) {
@@ -252,6 +268,7 @@ export default function CartModal() {
                             throw new Error('No order ID returned from PayPal');
                           }
                       
+                          console.log('PayPal order created:', order);
                           return order.orderID;
                         } catch (error) {
                           console.error('Error in createOrder:', error);
@@ -263,7 +280,7 @@ export default function CartModal() {
                           const response = await fetch('/api/paypal/capture', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ orderID: data.orderID }),
+                            body: JSON.stringify({ orderID: data.orderID })
                           });
                       
                           if (!response.ok) {
