@@ -3,7 +3,7 @@
 import React, { JSX, useEffect } from 'react';
 import { toast } from 'sonner';
 
-export function WelcomeToast(): JSX.Element {
+export function WelcomeToast(): JSX.Element | null {
   useEffect(() => {
     // ignore if screen height is too small
     if (window.innerHeight < 650) return;

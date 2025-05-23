@@ -1,4 +1,3 @@
-// components/product/product-description.tsx
 'use client';
 
 import { useState } from 'react';
@@ -15,31 +14,32 @@ export function ProductDescription({
   product: Product;
   onVariantChange?: (variant: Variant) => void;
 }) {
-  const [selectedVariant, setSelectedVariant] = useState<Variant>({id: product.id, color: product.variant?.colors[0], size: product.variant?.sizes[0], image: product.images[0]});
+  // Safely initialize selectedVariant with proper fallbacks
+  const [selectedVariant, setSelectedVariant] = useState<Variant>({
+    id: product.id,
+    color: product.variant?.colors?.[0] || '',
+    size: product.variant?.sizes?.[0] || '',
+    image: product.images?.[0] || ''
+  });
 
   const handleVariantChange = (newVariant: Variant) => {
-    console.log('Selected variant:', newVariant);
     setSelectedVariant(newVariant);
-    if (onVariantChange) {
-      onVariantChange(newVariant);
-    }
+    onVariantChange?.(newVariant);
   };
 
-  // Define options for color and size
+  // Define options with safe access
   const options = [
     {
       id: 'color',
       name: 'Color',
-      values: product.variant?.colors,
+      values: product.variant?.colors || [],
     },
     {
       id: 'size',
       name: 'Size',
-      values: product.variant?.sizes,
+      values: product.variant?.sizes || [],
     }
-  ]
-
-  console.log('Product:', product.name, 'Variants:', product.variant, 'Options:', options);
+  ];
 
   return (
     <>
@@ -48,15 +48,15 @@ export function ProductDescription({
         <div className="mt-[8px] mr-auto w-auto rounded-full bg-blue-600 p-2 text-sm text-white">
           <Price amount={product.price} currencyCode="USD" />
         </div>
-        {/* Variant Selectors */}
+        
         {product.variant ? (
           <div className="mt-4 space-y-4">
             {options.map((option) => (
               <dl key={option.id} className="mb-8">
                 <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
                 <dd className="flex flex-wrap gap-3">
-                  {option.values?.map((value) => {
-                    const isActive = selectedVariant[option.name as 'color' | 'size'] === value;
+                  {option.values.map((value) => {
+                    const isActive = selectedVariant[option.id as keyof Variant] === value;
 
                     return (
                       <button
@@ -65,15 +65,13 @@ export function ProductDescription({
                         title={`${option.name} ${value}`}
                         onClick={() => {
                           const newVariant = {
-                            id: product.id,
-                            color: option.name === "Color" ? value : selectedVariant.color,
-                            size: option.name === "Size" ? value : selectedVariant.size,
-                            image: product.images[product.variant?.colors?.indexOf(value)] ? product.images[product.variant?.colors?.indexOf(value)] : product.images[0]
+                            ...selectedVariant,
+                            [option.id]: value,
+                            image: option.id === 'color' 
+                              ? product.images[product.variant?.colors?.indexOf(value) ?? 0] || product.images[0]
+                              : selectedVariant.image
                           };
-                          if (typeof window !== undefined) {
-                            window.globalColorIndex = product.variant?.colors?.indexOf(newVariant.color);
-                          }
-                          handleVariantChange(newVariant); // findVariant always returns Variant
+                          handleVariantChange(newVariant);
                         }}
                         className={clsx(
                           'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
@@ -97,9 +95,10 @@ export function ProductDescription({
           </div>
         )}
       </div>
-      {product.description ? (
+      
+      {product.description && (
         <Prose className="mb-6 text-sm leading-tight dark:text-white/[60%]" html={product.description} />
-      ) : null}
+      )}
       <AddToCart product={product} selectedVariant={selectedVariant} />
     </>
   );

@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "strictNullChecks": false,
     "target": "es2015",
     "lib": ["dom", "dom.iterable", "esnext"],
     "downlevelIteration": true,
