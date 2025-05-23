@@ -10,24 +10,33 @@ import { Product } from 'lib/types';
 export function Gallery({ images, product }: { images: { src: string; altText: string }[]; product: Product }) {
   const { state, updateImage } = useProduct();
   const updateURL = useUpdateURL();
-  const imageIndex = state.image ? parseInt(state.image, 10) : 0;
-  const isColorSelected = !!state.color; // Check if a color is explicitly selected
+
+  // Prioritize color-based index when color is selected
+  const imageIndex = state.color && product.variant?.colors
+    ? product.variant.colors.indexOf(state.color) >= 0
+      ? product.variant.colors.indexOf(state.color)
+      : 0
+    : state.image
+      ? parseInt(state.image, 10)
+      : 0;
+
+  const isColorSelected = !!state.color;
 
   // Ensure imageIndex is valid
   const validImageIndex = Math.min(Math.max(imageIndex, 0), images.length - 1);
   const nextImageIndex = validImageIndex + 1 < images.length ? validImageIndex + 1 : 0;
   const previousImageIndex = validImageIndex === 0 ? images.length - 1 : validImageIndex - 1;
 
-  // Reset imageIndex to color's image when color changes
+  // Debug state and index
   useEffect(() => {
-    if (isColorSelected && product.variant?.colors) {
-      const colorIndex = product.variant.colors.indexOf(state.color as string) ?? 0;
-      if (colorIndex !== validImageIndex && colorIndex >= 0 && colorIndex < images.length) {
-        const newState = updateImage(colorIndex.toString());
-        updateURL(newState);
-      }
-    }
-  }, [state.color, validImageIndex, updateImage, updateURL, product.variant?.colors]);
+    console.log('Gallery state:', {
+      image: state.image,
+      color: state.color,
+      imageIndex,
+      validImageIndex,
+      colors: product.variant?.colors,
+    });
+  }, [state.image, state.color, imageIndex, validImageIndex, product.variant?.colors]);
 
   const buttonClassName =
     'h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center';
