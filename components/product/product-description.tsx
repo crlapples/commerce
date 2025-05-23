@@ -6,7 +6,7 @@ import { AddToCart } from 'components/cart/add-to-cart';
 import Price from 'components/price';
 import Prose from 'components/prose';
 import { Product, Variant } from 'lib/types';
-import { useProduct } from 'components/product/product-context';
+import { useProduct, useUpdateURL } from 'components/product/product-context';
 
 export function ProductDescription({
   product,
@@ -15,23 +15,30 @@ export function ProductDescription({
   product: Product;
   onVariantChange?: (variant: Variant) => void;
 }) {
-  const { updateImage, updateOption } = useProduct();
+  const { state, updateOption, updateImage } = useProduct();
+  const updateURL = useUpdateURL();
 
   // Safely initialize selectedVariant with proper fallbacks
   const [selectedVariant, setSelectedVariant] = useState<Variant>({
     id: product.id,
-    color: product.variant?.colors?.[0] || '',
-    size: product.variant?.sizes?.[0] || '',
+    color: product.variant?.colors?.[0] || state.color || '',
+    size: product.variant?.sizes?.[0] || state.size || '',
     image: product.images?.[0] || '',
   });
 
-  const handleVariantChange = (newVariant: Variant, imageIndex?: string) => {
+  const handleVariantChange = (newVariant: Variant, imageIndex: string) => {
     setSelectedVariant(newVariant);
-    if (imageIndex !== undefined) {
-      updateImage(imageIndex); // Update the image index in the context
-    }
-    newVariant.color ? updateOption('color', newVariant.color) : updateOption('color', ''); // Update the color in the context
-    newVariant.size ? updateOption('size', newVariant.size) : updateOption('size', ''); // Update the size in the context
+    // Batch state updates
+    const newState = {
+      ...state,
+      color: newVariant.color || '',
+      size: newVariant.size || '',
+      image: imageIndex,
+    };
+    updateImage(imageIndex); // Update image
+    updateOption('color', newVariant.color as string); // Update color
+    updateOption('size', newVariant.size as string); // Update size
+    updateURL(newState); // Update URL with batched state
     onVariantChange?.(newVariant);
   };
 
@@ -72,6 +79,7 @@ export function ProductDescription({
                         type="button"
                         title={`${option.name} ${value}`}
                         onClick={() => {
+                          // Calculate the image index based on the color
                           const imageIndex =
                             option.id === 'color'
                               ? (product.variant?.colors?.indexOf(value) ?? 0).toString()
@@ -86,7 +94,7 @@ export function ProductDescription({
                                   ''
                                 : selectedVariant.image,
                           };
-                          handleVariantChange(newVariant, option.id === 'color' ? imageIndex : undefined);
+                          handleVariantChange(newVariant, imageIndex as string);
                         }}
                         className={clsx(
                           'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
