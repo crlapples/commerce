@@ -25,10 +25,7 @@ export async function generateMetadata(props: {
 
   // Assuming the first image in the images array is the featured image
   const featuredImage = product.images[0];
-  const url = featuredImage || undefined;
-  // We don't have width/height/altText in our simple Product type, you might need to add them
-  const width = undefined;
-  const height = undefined;
+  const url = featuredImage;
   const indexable = !product.id
 
   return {
@@ -47,8 +44,6 @@ export async function generateMetadata(props: {
           images: [
             {
               url,
-              width,
-              height,
             }
           ]
         }

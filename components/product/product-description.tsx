@@ -7,7 +7,6 @@ import { AddToCart } from 'components/cart/add-to-cart';
 import Price from 'components/price';
 import Prose from 'components/prose';
 import { Product, Variant } from 'lib/types';
-import { getDefaultVariant, findVariant } from 'lib/utils';
 
 export function ProductDescription({
   product,
@@ -16,7 +15,7 @@ export function ProductDescription({
   product: Product;
   onVariantChange?: (variant: Variant) => void;
 }) {
-  const [selectedVariant, setSelectedVariant] = useState<Variant>(getDefaultVariant(product));
+  const [selectedVariant, setSelectedVariant] = useState<Variant>({id: product.id, color: product.variant?.colors[0], size: product.variant?.sizes[0], image: product.images[0]});
 
   const handleVariantChange = (newVariant: Variant) => {
     console.log('Selected variant:', newVariant);
@@ -31,16 +30,16 @@ export function ProductDescription({
     {
       id: 'color',
       name: 'Color',
-      values: Array.from(new Set(product.variants?.map((v) => v.color))) || ['default'],
+      values: product.variant?.colors,
     },
     {
       id: 'size',
       name: 'Size',
-      values: Array.from(new Set(product.variants?.map((v) => v.size).filter((s): s is string => !!s))) || ['one-size'],
-    },
-  ].filter((option) => option.values.length > 0);
+      values: product.variant?.sizes,
+    }
+  ]
 
-  console.log('Product:', product.name, 'Variants:', product.variants, 'Options:', options);
+  console.log('Product:', product.name, 'Variants:', product.variant, 'Options:', options);
 
   return (
     <>
@@ -50,15 +49,14 @@ export function ProductDescription({
           <Price amount={product.price} currencyCode="USD" />
         </div>
         {/* Variant Selectors */}
-        {product.variants && product.variants.length > 0 ? (
+        {product.variant ? (
           <div className="mt-4 space-y-4">
             {options.map((option) => (
               <dl key={option.id} className="mb-8">
                 <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
                 <dd className="flex flex-wrap gap-3">
-                  {option.values.map((value) => {
-                    const optionNameLowerCase = option.name.toLowerCase();
-                    const isActive = selectedVariant[optionNameLowerCase as 'color' | 'size'] === value;
+                  {option.values?.map((value) => {
+                    const isActive = selectedVariant[option.name as 'color' | 'size'] === value;
 
                     return (
                       <button
@@ -66,11 +64,13 @@ export function ProductDescription({
                         type="button"
                         title={`${option.name} ${value}`}
                         onClick={() => {
-                          const newVariant = findVariant(
-                            product,
-                            optionNameLowerCase === 'color' ? value : selectedVariant.color,
-                            optionNameLowerCase === 'size' ? value : selectedVariant.size
-                          );
+                          const newVariant = {
+                            id: product.id,
+                            color: option.name === "Color" ? value : selectedVariant.color,
+                            size: option.name === "Size" ? value : selectedVariant.size,
+                            image: product.images[product.variant?.colors?.indexOf(value)] ? product.images[product.variant?.colors?.indexOf(value)] : product.images[0]
+                          };
+                          globalColorIndex = product.variant?.colors?.indexOf(newVariant.color);
                           handleVariantChange(newVariant); // findVariant always returns Variant
                         }}
                         className={clsx(

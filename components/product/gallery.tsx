@@ -1,14 +1,20 @@
 'use client';
 
+import { useEffect } from 'react'
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { GridTileImage } from 'components/grid/tile';
 import { useProduct, useUpdateURL } from 'components/product/product-context';
 import Image from 'next/image';
+import { ProductDescription } from './product-description';
 
 export function Gallery({ images }: { images: { src: string; altText: string }[] }) {
   const { state, updateImage } = useProduct();
   const updateURL = useUpdateURL();
   const imageIndex = state.image ? parseInt(state.image) : 0;
+
+  useEffect(() => {
+    updateURL(updateImage(globalColorIndex.toString()));
+  }, [globalColorIndex, updateURL]);
 
   const nextImageIndex = imageIndex + 1 < images.length ? imageIndex + 1 : 0;
   const previousImageIndex = imageIndex === 0 ? images.length - 1 : imageIndex - 1;

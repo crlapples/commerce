@@ -237,6 +237,7 @@ export default function CartModal() {
                                 name: product.name,
                                 price: Number(product.price).toFixed(2), // Ensure price is a string with 2 decimal places
                                 quantity: item.quantity,
+                                variant: item.variant
                               };
                             })
                             .filter((item): item is NonNullable<typeof item> => item !== null);

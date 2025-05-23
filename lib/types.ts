@@ -1,7 +1,6 @@
-// lib/types.ts
 export interface Variant {
   id: string;
-  color: string;
+  color?: string;
   size?: string;
   image: string | undefined;
 }
@@ -17,7 +16,6 @@ export interface Product {
     colors?: string[];
     sizes?: string[];
   };
-  variants?: Variant[]; 
 }
 
 export type CartItem = {
