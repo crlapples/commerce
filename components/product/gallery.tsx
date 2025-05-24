@@ -1,11 +1,19 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { GridTileImage } from 'components/grid/tile';
 import { useProduct, useUpdateURL } from 'components/product/product-context';
 import Image from 'next/image';
 import { Product } from 'lib/types';
+
+function debounce<T extends (...args: any[]) => void>(func: T, wait: number) {
+  let timeout: NodeJS.Timeout | null = null; // Explicit type for timeout
+  return (...args: Parameters<T>): void => {
+    clearTimeout(timeout!);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
 
 export function Gallery({ images, product }: { images: { src: string; altText: string }[]; product: Product }) {
   const { state, updateImage } = useProduct();
@@ -18,12 +26,20 @@ export function Gallery({ images, product }: { images: { src: string; altText: s
   const nextImageIndex = validImageIndex + 1 < images.length ? validImageIndex + 1 : 0;
   const previousImageIndex = validImageIndex === 0 ? images.length - 1 : validImageIndex - 1;
 
+  // Debounced URL update
+  const debouncedUpdateURL = useCallback(
+    debounce((newState: { [key: string]: string }) => {
+      updateURL(newState);
+      console.log('Debounced URL update:', { image: validImageIndex, url: `?image=${validImageIndex}` });
+    }, 100),
+    [updateURL, validImageIndex]
+  );
+
   // Update URL to reflect validImageIndex
   useEffect(() => {
     const newState = { ...state, image: validImageIndex.toString() };
-    updateURL(newState);
-    console.log('Gallery URL update:', { image: validImageIndex, url: `?image=${validImageIndex}` });
-  }, [validImageIndex, state, updateURL]);
+    debouncedUpdateURL(newState);
+  }, [validImageIndex, state, debouncedUpdateURL]);
 
   // Debug state changes
   useEffect(() => {

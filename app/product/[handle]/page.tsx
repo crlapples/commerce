@@ -85,21 +85,21 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
           <div className="h-full w-full basis-full lg:basis-4/6">
             <Suspense
               fallback={
-                <div className="relative aspect-square h-full max-h-[550px] w-full overflow-hidden" />
+                <div className="relative aspect-square h-full max-h-[550px] w-full bg-gray-200 animate-pulse" />
               }
             >
               <Gallery
                 images={product.images.slice(0, 5).map((image) => ({
                   src: image,
-                  altText: product.name // Using product name as alt text for now
-                })) as any[]} // TODO: Update Gallery component to accept string[] for images
+                  altText: product.name,
+                }))}
                 product={product}
               />
             </Suspense>
           </div>
 
           <div className="basis-full lg:basis-2/6">
-            <Suspense fallback={null}>
+            <Suspense fallback={<div className="h-[200px] bg-gray-200 animate-pulse" />}>
               <ProductDescription product={product} />
             </Suspense>
           </div>
