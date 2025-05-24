@@ -1,13 +1,11 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { createContext, useContext, useMemo, useOptimistic } from 'react';
+import React, { createContext, useContext, useMemo, useOptimistic, useCallback } from 'react';
 
 export interface ProductVariant {
   color: string;
 }
-
-
 
 type ProductState = {
   [key: string]: string;
@@ -38,29 +36,29 @@ export function ProductProvider({ children }: { children: React.ReactNode }) {
     getInitialState(),
     (prevState: ProductState, update: ProductState) => ({
       ...prevState,
-      ...update
+      ...update,
     })
   );
 
-  const updateOption = (name: string, value: string) => {
+  const updateOption = useCallback((name: string, value: string) => {
     const newState = { [name]: value };
     setOptimisticState(newState);
     return { ...state, ...newState };
-  };
+  }, [state, setOptimisticState]);
 
-  const updateImage = (index: string) => {
+  const updateImage = useCallback((index: string) => {
     const newState = { image: index };
     setOptimisticState(newState);
     return { ...state, ...newState };
-  };
+  }, [state, setOptimisticState]);
 
   const value = useMemo(
     () => ({
       state,
       updateOption,
-      updateImage
+      updateImage,
     }),
-    [state]
+    [state, updateOption, updateImage]
   );
 
   return <ProductContext.Provider value={value}>{children}</ProductContext.Provider>;
@@ -77,11 +75,15 @@ export function useProduct() {
 export function useUpdateURL() {
   const router = useRouter();
 
-  return (state: ProductState) => {
+  return useCallback((state: ProductState) => {
     const newParams = new URLSearchParams(window.location.search);
     Object.entries(state).forEach(([key, value]) => {
-      newParams.set(key, value);
+      if (value) {
+        newParams.set(key, value);
+      } else {
+        newParams.delete(key);
+      }
     });
     router.push(`?${newParams.toString()}`, { scroll: false });
-  };
+  }, [router]);
 }

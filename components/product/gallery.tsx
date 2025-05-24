@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import { GridTileImage } from 'components/grid/tile';
 import { useProduct, useUpdateURL } from 'components/product/product-context';
@@ -26,11 +26,17 @@ export function Gallery({ images, product }: { images: { src: string; altText: s
   const nextImageIndex = validImageIndex + 1 < images.length ? validImageIndex + 1 : 0;
   const previousImageIndex = validImageIndex === 0 ? images.length - 1 : validImageIndex - 1;
 
+  // Memoize state properties to prevent unnecessary useEffect triggers
+  const memoizedState = useMemo(() => ({
+    image: state.image,
+    color: state.color,
+  }), [state.image, state.color]);
+
   // Debounced URL update
   const debouncedUpdateURL = useCallback(
     debounce((newState: { [key: string]: string }) => {
       updateURL(newState);
-      console.log('Debounced URL update:', { image: validImageIndex, url: `?image=${validImageIndex}` });
+      console.log('Debounced URL update:', { image: validImageIndex, url: `?${new URLSearchParams(newState).toString()}` });
     }, 100),
     [updateURL, validImageIndex]
   );
@@ -38,8 +44,11 @@ export function Gallery({ images, product }: { images: { src: string; altText: s
   // Update URL to reflect validImageIndex
   useEffect(() => {
     const newState = { ...state, image: validImageIndex.toString() };
-    debouncedUpdateURL(newState);
-  }, [validImageIndex, state, debouncedUpdateURL]);
+    // Only update if image has changed
+    if (newState.image !== state.image) {
+      debouncedUpdateURL(newState);
+    }
+  }, [validImageIndex, memoizedState, debouncedUpdateURL, state.image]);
 
   // Debug state changes
   useEffect(() => {

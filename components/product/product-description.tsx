@@ -61,7 +61,7 @@ export function ProductDescription({
           <div className="mt-4 space-y-4">
             {options.map((option) => (
               <dl key={option.id} className="mb-8">
-                <dt className="mb-4 text-sm uppercase tracking-wide hover:cursor-pointer">{option.name}</dt>
+                <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
                 <dd className="flex flex-wrap gap-3">
                   {option.values.map((value) => {
                     const isActive = selectedVariant[option.id as keyof Variant] === value;
@@ -91,7 +91,7 @@ export function ProductDescription({
                         className={clsx(
                           'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
                           {
-                            'cursor-default ring-2 ring-blue-600': isActive,
+                            'cursor-pointer ring-2 ring-blue-600': isActive,
                             'ring-1 ring-transparent transition-[ring] duration-300 ease-in-out hover:ring-blue-600': !isActive,
                           }
                         )}
