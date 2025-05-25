@@ -7,11 +7,11 @@
     }
   }
 
+  .a:hover ul {
+    animation-play-state: paused;
+  }
+
   .animateCarousel {
     animation: carousel 20s linear infinite;
     will-change: transform;
-  }
-  
-  .animateCarousel:hover {
-    animation-play-state: paused;
   }
