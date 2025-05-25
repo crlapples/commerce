@@ -19,36 +19,55 @@ export async function Carousel() {
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-
+  
     const carousels = container.querySelectorAll<HTMLElement>('ul');
-
-    const resetDuration = () => {
+  
+    let isHovered = false;
+    let count = 20;
+  
+    const resetAnimation = () => {
       carousels.forEach((ul) => {
         ul.style.animationDuration = '20s';
+        ul.style.animationDirection = 'normal';
       });
+      count = 20;
     };
-
-    let count = 20;
-
+  
     const handleScroll = (e: WheelEvent) => {
+      if (!isHovered) return; // Only respond if hovered
+  
       const isLeft = e.deltaY < 0 || e.deltaX < 0;
-      const isRight = e.deltaY > 0 || e.deltaX > 0;
-
+  
       carousels.forEach((ul) => {
         ul.style.animationDirection = isLeft ? 'reverse' : 'normal';
         ul.style.animationDuration = `${Math.max(count--, 1)}s`;
       });
-
+  
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(resetDuration, 1); // 300ms without scroll = reset
+      timeoutRef.current = setTimeout(() => {
+        resetAnimation();
+      }, 300); // 300ms after last scroll event resets animation
     };
-
+  
+    const onMouseEnter = () => {
+      isHovered = true;
+    };
+    const onMouseLeave = () => {
+      isHovered = false;
+      resetAnimation();
+    };
+  
+    container.addEventListener('mouseenter', onMouseEnter);
+    container.addEventListener('mouseleave', onMouseLeave);
     window.addEventListener('wheel', handleScroll);
+  
     return () => {
+      container.removeEventListener('mouseenter', onMouseEnter);
+      container.removeEventListener('mouseleave', onMouseLeave);
       window.removeEventListener('wheel', handleScroll);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, []);
+  }, []);  
 
   return (
     <span
