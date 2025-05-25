@@ -4,15 +4,14 @@ import Link from 'next/link';
 import { useRef, useEffect } from 'react';
 import { GridTileImage } from './grid/tile';
 import { Product } from 'lib/types';
-import products from 'lib/products.json'
+import products from 'lib/products.json';
 import styles from "./Carousel.module.css";
 
 export async function Carousel() {
-  const toFilterProducts = products
+  const toFilterProducts = products;
   const productsA = toFilterProducts.filter(product => Number(product.id) >= 4);
   if (!productsA || productsA.length === 0) return null;
-  // Duplicate products for seamless looping
-  const carouselProducts = [...productsA, ...productsA, ...productsA];
+  const carouselProducts = [...productsA]; // Single product list
 
   return (
     <CarouselClient carouselProducts={carouselProducts} />
@@ -26,24 +25,23 @@ function CarouselClient({ carouselProducts }: { carouselProducts: Product[] }) {
     const carousel = carouselRef.current;
     if (!carousel) return;
 
-    const totalWidth = carousel.scrollWidth;
-    const singleSetWidth = totalWidth / 3; // Since we tripled the products
-    let scrollPosition = singleSetWidth; // Start at the beginning of the second set
+    const totalWidth = carousel.scrollWidth; // Width of the single product list
+    let scrollPosition = 0; // Start at the beginning
     let animationFrame: number;
 
-    // Set initial scroll position to the second set for seamless looping
-    carousel.scrollLeft = scrollPosition;
+    // Set initial scroll position
+    carousel.scrollTo({ left: scrollPosition, behavior: 'instant' });
 
     // Automatic scrolling
-    const scrollSpeed = 1; // Pixels per frame
+    const scrollSpeed = 2; // Pixels per frame
     const scroll = () => {
       scrollPosition += scrollSpeed;
-      carousel.scrollLeft = scrollPosition;
+      carousel.scrollTo({ left: scrollPosition, behavior: 'smooth' });
 
-      // Seamless loop: reset to the second set when reaching the end
-      if (scrollPosition >= singleSetWidth * 2) {
-        scrollPosition = singleSetWidth;
-        carousel.scrollLeft = scrollPosition;
+      // Reset to start when reaching the end
+      if (scrollPosition >= totalWidth - 50) { // Buffer for early reset
+        scrollPosition = 0;
+        carousel.scrollTo({ left: scrollPosition, behavior: 'instant' });
       }
 
       animationFrame = requestAnimationFrame(scroll);
@@ -56,19 +54,19 @@ function CarouselClient({ carouselProducts }: { carouselProducts: Product[] }) {
     const handleScroll = () => {
       scrollPosition = carousel.scrollLeft;
 
-      // Jump to second set when reaching the end
-      if (scrollPosition >= singleSetWidth * 2) {
-        carousel.scrollLeft = singleSetWidth;
-        scrollPosition = singleSetWidth;
+      // Reset to start when reaching the end
+      if (scrollPosition >= totalWidth - 50) {
+        scrollPosition = 0;
+        carousel.scrollTo({ left: scrollPosition, behavior: 'instant' });
       }
-      // Jump to second set when reaching the start
-      else if (scrollPosition <= 0) {
-        carousel.scrollLeft = singleSetWidth;
-        scrollPosition = singleSetWidth;
+      // Reset to end when reaching the start
+      else if (scrollPosition <= 50) {
+        scrollPosition = totalWidth - 50; // Start near the end
+        carousel.scrollTo({ left: scrollPosition, behavior: 'instant' });
       }
     };
 
-    carousel.addEventListener('scroll', handleScroll);
+    carousel.addEventListener('scroll', handleScroll, { passive: true });
 
     // Cleanup
     return () => {
