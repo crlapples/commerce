@@ -1,27 +1,35 @@
-.animateCarousel {
-  display: flex;
-  /* Ensure smooth scrolling behavior */
-  scroll-behavior: smooth;
-  /* Prevent vertical scrolling */
-  overflow-y: hidden;
-  /* Optional: Fallback animation if JavaScript is disabled */
-  animation: scroll 20s linear infinite;
-}
-
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
+@keyframes carousel {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      .b {
+        order: 3;
+      }
+    }
+    75% {
+      .b {
+        order: 1;
+      }
+    }
+    100% {
+      transform: translateX(-33.33333%);
+    }
   }
-  100% {
-    transform: translateX(-33.3333%); /* Move by one set of products */
-  }
-}
 
-/* Hide scrollbar for cleaner look */
-.animateCarousel::-webkit-scrollbar {
-  display: none;
-}
-.animateCarousel {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+  .a {
+    order: 2;
+  }
+
+  .b {
+    order: 3;
+  }
+  
+  .animateCarousel {
+    animation: carousel 20s linear infinite;
+    will-change: transform;
+  }
+  
+  .animateCarousel:hover {
+    animation-play-state: paused;
+  }
