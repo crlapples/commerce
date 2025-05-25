@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
 import Link from 'next/link';
 import { GridTileImage } from './grid/tile';
 import { Product } from 'lib/types';
 import { useEffect, useRef } from 'react';
 import products from 'lib/products.json';
-import "./Carousel.module.css";
+import './Carousel.module.css';
 
 function CarouselContent({ products }: { products: Product[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,10 +24,10 @@ function CarouselContent({ products }: { products: Product[] }) {
     const resetPoint = maxScroll / 2;
 
     let scrollPosition = 0;
-    const scrollSpeed = 0.5; // pixels per frame
+    const scrollSpeed = 1.5; // Increased speed - pixels per frame
 
     const animate = () => {
-      if (!isScrollingRef.current) {
+      if (!isScrollingRef.current && container) {
         scrollPosition += scrollSpeed;
         
         // Reset position when we reach the halfway point (end of first set)
@@ -49,10 +49,15 @@ function CarouselContent({ products }: { products: Product[] }) {
       isScrollingRef.current = true;
       const currentScroll = container.scrollLeft;
       
-      // If user scrolls past the reset point, jump back to beginning
+      // If user scrolls forward past the reset point, jump back to beginning
       if (currentScroll >= resetPoint) {
         container.scrollLeft = 0;
         scrollPosition = 0;
+      }
+      // If user scrolls backward past the beginning, jump to the end of first set
+      else if (currentScroll <= 0) {
+        container.scrollLeft = resetPoint - 1;
+        scrollPosition = resetPoint - 1;
       } else {
         scrollPosition = currentScroll;
       }
@@ -97,7 +102,7 @@ function CarouselContent({ products }: { products: Product[] }) {
   return (
     <div 
       ref={containerRef}
-      className="flex overflow-x-scroll gap-[8px] px-1 pb-6 pt-1 scrollbar-hide"
+      className="flex overflow-x-scroll gap-[8px] mx-2 pb-6 pt-1 scrollbar-hide"
       style={{ 
         scrollbarWidth: 'none',
         msOverflowStyle: 'none'
