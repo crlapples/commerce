@@ -1,0 +1,26 @@
+@keyframes carousel {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-66.666%);
+    }
+  }
+  
+  .animate-carousel {
+    animation: carousel 20s linear infinite;
+    display: flex;
+    will-change: transform;
+  }
+  
+  .animate-carousel:hover {
+    animation-play-state: paused;
+  }
+  
+  .carousel-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    padding-bottom: 1.5rem;
+    padding-top: 0.25rem;
+  }
