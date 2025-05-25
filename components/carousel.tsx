@@ -40,7 +40,7 @@ export async function Carousel() {
   
       carousels.forEach((ul) => {
         ul.style.animationDirection = isLeft ? 'reverse' : 'normal';
-        count = Math.max(count - 0.5, 5)
+        count = Math.max(count - 0.5, 15)
         ul.style.animationDuration = `${count}s`;
       });
   
@@ -55,7 +55,6 @@ export async function Carousel() {
     };
     const onMouseLeave = () => {
       isHovered = false;
-      resetAnimation();
     };
   
     container.addEventListener('mouseenter', onMouseEnter);
