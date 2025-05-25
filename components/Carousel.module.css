@@ -2,11 +2,6 @@
     0% {
       transform: translateX(0);
     }
-    25% {
-      .b {
-        order: 2;
-      }
-    }
     100% {
       transform: translateX(-100.00%);
     }

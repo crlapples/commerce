@@ -12,10 +12,10 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <>
+    <div className='overflow-x-hidden'>
       <ThreeItemGrid />
       <Carousel />
       <Footer />
-    </>
+    </div>
   );
 }
