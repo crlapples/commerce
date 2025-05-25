@@ -62,7 +62,7 @@ export function Gallery({ images, product }: { images: { src: string; altText: s
   }, [state.image, state.color, imageIndex, validImageIndex, product.variant?.colors]);
 
   const buttonClassName =
-    'h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center';
+    'hover:cursor-pointer h-full px-6 transition-all ease-in-out hover:scale-110 hover:text-black dark:hover:text-white flex items-center justify-center';
 
   return (
     <form>
@@ -123,7 +123,7 @@ export function Gallery({ images, product }: { images: { src: string; altText: s
                     console.log('Thumbnail click:', { newImage: index });
                   }}
                   aria-label="Select product image"
-                  className="h-full w-full"
+                  className="h-full w-full hover:cursor-pointer"
                 >
                   <GridTileImage
                     alt={image.altText}

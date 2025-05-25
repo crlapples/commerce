@@ -1,39 +1,37 @@
 [
   {
     "id": "1",
-    "name": "Wireless Mouse",
-    "description": "Ergonomic wireless mouse with silent clicks.",
-    "price": "25.50",
+    "name": "Demon's Souls - Fluted Armor Figure",
+    "description": "A 15cm/5.9inches highly detailed collectible figure of a Demon's Souls player character, clad in iconic armor with swords and shields. Perfect for fans of the series.",
+    "price": "60.00",
     "images": [
-      "/images/mouse-1.jpg",
-      "/images/mouse-2.jpg"
+      "/dsfigure1.avif",
+      "/dsfigure2.avif",
+      "/dsfigure3.avif",
+      "/dsfigure4.avif",
+      "/dsfigure5.avif"
     ]
   },
   {
     "id": "2",
-    "name": "Mechanical Keyboard",
-    "description": "RGB mechanical keyboard with clicky switches.",
-    "price": "89.99",
+    "name": "Arthas Menethil – Fall of the Lich King Figure",
+    "description": "A 18cm/7inches premium collectible figure of Arthas Menethil as the Lich King, featuring Frostmourne, intricate armor details, and a frozen base inspired by Icecrown Citadel.",
+    "price": "60.00",
     "images": [
-      "/images/keyboard-1.jpg",
-      "/images/keyboard-2.jpg"
-    ],
-    "variant": {
-      "color": "black"
-    }
-  },
+      "/lichking.png"
+    ]
+  },    
   {
     "id": "3",
-    "name": "USB-C Hub",
-    "description": "Multi-port USB-C hub with HDMI and card reader.",
-    "price": "35.00",
+    "name": "Warglaives of Azzinoth - World of Warcraft Figure",
+    "description": "A detailed collectible figure of the Warglaives of Azzinoth from World of Warcraft. Features 22cm dual-bladed weapons with glowing green accents, demonic runes, and a display stand.",
+    "price": "50.00",
     "images": [
-      "/images/hub-1.jpg"
-    ],
-    "variant": {
-      "color": "white"
-    }
-  },
+      "/warglaive1.png",
+      "/warglaive2.png",
+      "/warglaive3.png"
+    ]
+  },  
   {
     "id": "4",
     "name": "World of Warcraft - Horde T-Shirt",
@@ -55,12 +53,42 @@
     "description": "Represent the noble Alliance in this high-quality, World of Warcraft t-shirt! Boldly display the blue lion crest on ultra-comfortable fabric, perfect for adventurers, PvP battles, or showing your pride at gaming events. Join other heroes within your favorite faction!",
     "price": "30.00",
     "images": [
-      "/images/shirt-alliance-1.jpg",
-      "/images/shirt-alliance-2.jpg"
+      "/shirt4.png",
+      "/shirt5.png",
+      "/shirt6.png"
     ],
     "variant": {
-      "color": "blue",
-      "sizes": ["S", "M", "L", "XL"]
+      "colors": ["White", "Blue", "Black"],
+      "sizes": ["S", "M", "L"]
     }
-  }
+  },
+  {
+    "id": "6",
+    "name": "Wireless Earphones - Touchscreen",
+    "description": "Experience the future of audio with these premium wireless earphones featuring a smart touchscreen display on the charging case. Easily control playback, check battery levels, and manage calls with a tap. Perfect for workouts, commutes, and all-day use.",
+    "price": "30.00",
+    "images": [
+      "/earphones1.png",
+      "/earphones2.png",
+      "/earphones3.avif",
+      "/earphones4.avif"
+    ],
+    "variant": {
+      "colors": ["White", "Black"]
+    }
+  },
+  {
+    "id": "7",
+    "name": "NextGen Smart Watch",
+    "description": "Stay connected and track your health in style with the NextGen Smart Watch. Features heart rate monitoring, step tracking, notifications, customizable watch faces, and long battery life. A sleek, everyday wearable for tech-savvy users.",
+    "price": "18.00",
+    "images": [
+      "/watch1.png",
+      "/watch2.png",
+      "/watch3.png"
+    ],
+    "variant": {
+      "colors": ["Pink", "Black", "Gold"]
+    }
+  }    
 ]

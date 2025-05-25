@@ -92,7 +92,7 @@ export function ProductDescription({
                           'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
                           {
                             'cursor-pointer ring-2 ring-blue-600': isActive,
-                            'ring-1 ring-transparent transition-[ring] duration-300 ease-in-out hover:ring-blue-600': !isActive,
+                            'cursor-pointer ring-1 ring-transparent transition-[ring] duration-300 ease-in-out hover:ring-blue-600': !isActive,
                           }
                         )}
                       >

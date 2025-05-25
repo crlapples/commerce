@@ -51,10 +51,13 @@ export async function generateMetadata(props: {
   };
 }
 
+let id;
+
 export default async function ProductPage(props: { params: Promise<{ handle: string }> }) {
   const params = await props.params;
   const products = await getProductsFromJson();
   const product = products.find((product) => product.id === params.handle);
+  id = params.handle;
 
   if (!product) return notFound();
 
@@ -119,11 +122,12 @@ async function getProductsFromJson(): Promise<Product[]> {
 
 
 async function RelatedProducts({ id }: { id: string }) {
-  const relatedProducts = await getProductsFromJson();
+  const toFilterProducts = await getProductsFromJson();
+  const relatedProducts = toFilterProducts.filter(product => product.id !== id);
 
   return (
     <div className="py-8">
-      <h2 className="mb-4 text-2xl font-bold">Related Products</h2>
+      <h2 className="mb-4 text-2xl font-bold">Products to Bundle</h2>
       <ul className="flex w-full gap-4 overflow-x-auto pt-1">
         {relatedProducts.map((product) => (
           <li
