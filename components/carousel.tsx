@@ -40,7 +40,8 @@ export async function Carousel() {
   
       carousels.forEach((ul) => {
         ul.style.animationDirection = isLeft ? 'reverse' : 'normal';
-        ul.style.animationDuration = `${Math.max(count - 0.01, 1)}s`;
+        count = Math.max(count - 0.01, 1)
+        ul.style.animationDuration = `${count}s`;
       });
   
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
@@ -72,7 +73,7 @@ export async function Carousel() {
   return (
     <span
       ref={containerRef}
-      className={`${styles.a} w-[266.66666vw] md:w-[137vw] flex overflow-x-hidden gap-[8px] px-1 pb-6 pt-1`}
+      className={`${styles.a} w-[270vw] md:w-[137vw] flex overflow-x-hidden gap-[8px] px-1 pb-6 pt-1`}
     >
       <ul className={`${styles.animateCarousel} flex w-full gap-[8px]`}>
         {carouselProducts.map((product, i) => (
