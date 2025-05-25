@@ -4,22 +4,15 @@ import Link from 'next/link';
 import { useRef, useEffect } from 'react';
 import { GridTileImage } from './grid/tile';
 import { Product } from 'lib/types';
-import fs from 'fs/promises';
-import path from 'path';
+import products from 'lib/products.json'
 import styles from "./Carousel.module.css";
 
-async function getProductsFromJson(): Promise<Product[]> {
-  const filePath = path.join(process.cwd(), 'lib', 'products.json');
-  const jsonData = await fs.readFile(filePath, 'utf-8');
-  return JSON.parse(jsonData);
-}
-
 export async function Carousel() {
-  const toFilterProducts = await getProductsFromJson();
-  const products = toFilterProducts.filter(product => Number(product.id) >= 4);
-  if (!products || products.length === 0) return null;
+  const toFilterProducts = products
+  const productsA = toFilterProducts.filter(product => Number(product.id) >= 4);
+  if (!productsA || productsA.length === 0) return null;
   // Duplicate products for seamless looping
-  const carouselProducts = [...products, ...products, ...products];
+  const carouselProducts = [...productsA, ...productsA, ...productsA];
 
   return (
     <CarouselClient carouselProducts={carouselProducts} />
