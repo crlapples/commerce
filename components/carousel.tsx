@@ -3,7 +3,7 @@ import { GridTileImage } from './grid/tile';
 import { Product } from 'lib/types';
 import fs from 'fs/promises';
 import path from 'path';
-import styles from './Carousel.module.css'; // Import the CSS module
+import "./Carousel.module.css";
 
 async function getProductsFromJson(): Promise<Product[]> {
   const filePath = path.join(process.cwd(), 'lib', 'products.json');
@@ -14,13 +14,13 @@ async function getProductsFromJson(): Promise<Product[]> {
 export async function Carousel() {
   const toFilterProducts = await getProductsFromJson();
   const products = toFilterProducts.filter(product => Number(product.id) < 4);
-  console.log('Products:', products); // Debug to ensure products are loaded
   if (!products || products.length === 0) return null;
+  // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
   const carouselProducts = [...products, ...products, ...products];
 
   return (
-    <div className={styles.carouselContainer}>
-      <ul className={`${styles.animateCarousel} flex gap-4`}>
+    <div className="w-full overflow-x-auto pb-6 pt-1">
+      <ul className="flex animate-carousel gap-4">
         {carouselProducts.map((product, i) => (
           <li
             key={`${product.id}${i}`}
@@ -32,7 +32,7 @@ export async function Carousel() {
                 label={{
                   title: product.name,
                   amount: product.price,
-                  currencyCode: 'USD',
+                  currencyCode: 'USD' // Assuming USD currency based on your previous examples
                 }}
                 src={product.images[0] || '/placeholder-image.jpg'}
                 fill
