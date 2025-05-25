@@ -28,13 +28,15 @@ export async function Carousel() {
       });
     };
 
+    let count = 20;
+
     const handleScroll = (e: WheelEvent) => {
       const isLeft = e.deltaY < 0 || e.deltaX < 0;
       const isRight = e.deltaY > 0 || e.deltaX > 0;
 
       carousels.forEach((ul) => {
         ul.style.animationDirection = isLeft ? 'reverse' : 'normal';
-        ul.style.animationDuration = '5s';
+        ul.style.animationDuration = `${Math.max(count--, 1)}s`;
       });
 
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
