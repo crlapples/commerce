@@ -8,41 +8,55 @@ import { useEffect, useRef } from 'react';
 import products from 'lib/products.json'
 
 function CarouselContent({ products }: { products: Product[] }) {
-  const spanRef = useRef<HTMLSpanElement>(null);
+  const containerRef = useRef<HTMLSpanElement>(null);
+  const isScrollingRef = useRef(false);
 
   useEffect(() => {
-    const span = spanRef.current;
-    if (!span) return;
+    const container = containerRef.current;
+    if (!container) return;
 
+    const scrollWidth = container.scrollWidth;
+    const clientWidth = container.clientWidth;
+    const maxScroll = scrollWidth - clientWidth;
+    
+    // Since we have duplicated content, the halfway point is where we reset
+    const resetPoint = maxScroll / 2;
+
+    // Handle manual scrolling
     const handleScroll = () => {
-      const scrollLeft = span.scrollLeft;
-      const scrollWidth = span.scrollWidth;
-      const clientWidth = span.clientWidth;
-      const maxScroll = scrollWidth - clientWidth;
+      isScrollingRef.current = true;
+      const currentScroll = container.scrollLeft;
       
-      // Since we have two identical ul elements, the halfway point is where we reset
-      const halfPoint = maxScroll / 2;
-      
-      // If scrolled past halfway point (end of first ul), jump back to start
-      if (scrollLeft >= halfPoint) {
-        span.scrollLeft = 0;
-      }
-      // If scrolled backwards past the start, jump to end of first ul
-      else if (scrollLeft <= 0) {
-        span.scrollLeft = halfPoint - 1;
+      // If user scrolls past the reset point, jump back to beginning
+      if (currentScroll >= resetPoint) {
+        container.scrollLeft = 0;
+      } else {
+        // Keep track of scroll position for consistency
       }
     };
 
-    span.addEventListener('scroll', handleScroll, { passive: true });
+    // Resume auto-scroll after manual scroll stops
+    let scrollTimeout: ReturnType<typeof setTimeout>;
+    const handleScrollEnd = () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        isScrollingRef.current = false;
+      }, 1000); // Resume after 1 second of no scrolling
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    container.addEventListener('scroll', handleScrollEnd);
 
     return () => {
-      span.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimeout);
+      container.removeEventListener('scroll', handleScroll);
+      container.removeEventListener('scroll', handleScrollEnd);
     };
-  }, []);
+  }, [products]);
 
   return (
     <span 
-      ref={spanRef}
+      ref={containerRef}
       className={`${styles.a} w-[266.66666vw] md:w-[137vw] flex overflow-x-scroll gap-[8px] px-1 pb-6 pt-1`}
     >
       <ul className={`${styles.animateCarousel} flex w-full gap-[8px]`}>
