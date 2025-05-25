@@ -11,35 +11,63 @@ async function getProductsFromJson(): Promise<Product[]> {
 }
 
 export async function Carousel() {
-  const products = await getProductsFromJson();
+  const toFilterProducts = await getProductsFromJson();
+  const products = toFilterProducts.filter((product) => Number(product.id) < 4);
+  console.log('Products:', products); // Debug to ensure products are loaded
   if (!products || products.length === 0) return null;
-  // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
   const carouselProducts = [...products, ...products, ...products];
 
   return (
-    <div className="w-full overflow-x-auto pb-6 pt-1">
-      <ul className="flex animate-carousel gap-4">
-        {carouselProducts.map((product, i) => (
-          <li
-            key={`${product.id}${i}`}
-            className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
-          >
-            <Link href={`/product/${product.id}`} className="relative h-full w-full">
-              <GridTileImage
-                alt={product.name}
-                label={{
-                  title: product.name,
-                  amount: product.price,
-                  currencyCode: 'USD' // Assuming USD currency based on your previous examples
-                }}
-                src={product.images[0] || '/placeholder-image.jpg'}
-                fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <>
+      <div className="w-full overflow-x-auto pb-6 pt-1">
+        <ul className="flex animate-carousel gap-4">
+          {carouselProducts.map((product, i) => (
+            <li
+              key={`${product.id}${i}`}
+              className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
+            >
+              <Link href={`/product/${product.id}`} className="relative h-full w-full">
+                <GridTileImage
+                  alt={product.name}
+                  label={{
+                    title: product.name,
+                    amount: product.price,
+                    currencyCode: 'USD',
+                  }}
+                  src={product.images[0] || '/placeholder-image.jpg'}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <style jsx>{`
+        @keyframes carousel {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-66.666%);
+          }
+        }
+
+        .animate-carousel {
+          animation: carousel 20s linear infinite;
+          display: flex;
+          will-change: transform;
+        }
+
+        .animate-carousel:hover {
+          animation-play-state: paused;
+        }
+
+        .w-full.overflow-x-auto {
+          overflow-x: auto;
+          white-space: nowrap;
+        }
+      `}</style>
+    </>
   );
 }
