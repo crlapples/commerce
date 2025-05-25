@@ -1,17 +1,8 @@
-@keyframes carousel {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(calc(-100.00% + 8px));
-    }
-  }
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
 
-  .a:hover ul {
-    animation-play-state: paused;
-  }
-
-  .animateCarousel {
-    animation: carousel 20s linear infinite;
-    will-change: transform;
-  }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
+}
