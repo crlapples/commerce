@@ -16,10 +16,10 @@ export async function Carousel() {
   const products = toFilterProducts.filter(product => Number(product.id) >= 4);
   if (!products || products.length === 0) return null;
   // Purposefully duplicating products to make the carousel loop and not run out of products on wide screens.
-  const carouselProducts = [...products, ...products, ...products];
+  const carouselProducts = [...products];
 
   return (
-    <div className={`${styles.animateCarousel} w-full overflow-x-auto px-1 pb-6 pt-1`}>
+    <div className={`${styles.animateCarousel} inline-block w-full overflow-x-auto px-1 pb-6 pt-1`}>
       <ul className={`${styles.a} flex gap-4`}>
         {carouselProducts.map((product, i) => (
           <li

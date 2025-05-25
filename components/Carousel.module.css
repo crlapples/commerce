@@ -4,27 +4,14 @@
     }
     25% {
       .b {
-        order: 3;
-      }
-    }
-    75% {
-      .b {
-        order: 1;
+        order: 2;
       }
     }
     100% {
-      transform: translateX(-33.33333%);
+      transform: translateX(-100.00%);
     }
   }
 
-  .a {
-    order: 2;
-  }
-
-  .b {
-    order: 3;
-  }
-  
   .animateCarousel {
     animation: carousel 20s linear infinite;
     will-change: transform;
