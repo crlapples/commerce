@@ -1,11 +1,22 @@
+@media (min-width: 900px) {
+  @keyframes carousel {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(calc(-100.00% + 8px));
+      }
+    }
+}
+
 @keyframes carousel {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(calc(-100.00% + 8px));
-    }
+  0% {
+    transform: translateX(0);
   }
+  100% {
+    transform: translateX(calc(-100.00% + 8px));
+  }
+}
 
   .a:hover ul {
     animation-play-state: paused;

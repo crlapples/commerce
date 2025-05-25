@@ -73,7 +73,7 @@ export async function Carousel() {
   return (
     <span
       ref={containerRef}
-      className={`${styles.a} w-[270vw] md:w-[137vw] flex overflow-x-hidden gap-[8px] px-1 pb-6 pt-1`}
+      className={`${styles.a} w-[290vw] md:w-[137vw] flex overflow-x-hidden gap-[8px] px-1 pb-6 pt-1`}
     >
       <ul className={`${styles.animateCarousel} flex w-full gap-[8px]`}>
         {carouselProducts.map((product, i) => (
