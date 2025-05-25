@@ -40,14 +40,14 @@ export async function Carousel() {
   
       carousels.forEach((ul) => {
         ul.style.animationDirection = isLeft ? 'reverse' : 'normal';
-        count = Math.max(count - 0.5, 12)
+        count = Math.max(count - 0.25, 15)
         ul.style.animationDuration = `${count}s`;
       });
   
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
         resetAnimation();
-      }, 1000); // 300ms after last scroll event resets animation
+      }, 100); // 300ms after last scroll event resets animation
     };
   
     const onMouseEnter = () => {
