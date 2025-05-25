@@ -78,7 +78,7 @@ function CarouselClient({ carouselProducts }: { carouselProducts: Product[] }) {
   }, []);
 
   return (
-    <div className="w-full overflow-x-auto pb-6 pt-1" ref={carouselRef}>
+    <div className="w-full overflow-x-auto px-1 pb-6 pt-1" ref={carouselRef}>
       <ul className={`${styles.animateCarousel} flex gap-4`}>
         {carouselProducts.map((product, i) => (
           <li

@@ -1,12 +1,11 @@
 .animateCarousel {
   display: flex;
-  gap: 1rem;
   /* Ensure smooth scrolling behavior */
   scroll-behavior: smooth;
   /* Prevent vertical scrolling */
   overflow-y: hidden;
   /* Optional: Fallback animation if JavaScript is disabled */
-  /* animation: scroll 20s linear infinite; */
+  animation: scroll 20s linear infinite;
 }
 
 @keyframes scroll {
