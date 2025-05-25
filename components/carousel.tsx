@@ -19,7 +19,7 @@ export async function Carousel() {
   const carouselProducts = [...products];
 
   return (
-    <div className={`w-full overflow-x-hidden px-1 pb-6 pt-1`}>
+    <div className={`w-full flex overflow-x-scroll px-1 pb-6 pt-1`}>
       <ul className={`${styles.animateCarousel} ${styles.a} flex gap-4`}>
         {carouselProducts.map((product, i) => (
           <li
