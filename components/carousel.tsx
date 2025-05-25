@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link';
 import { GridTileImage } from './grid/tile';
 import { Product } from 'lib/types';
