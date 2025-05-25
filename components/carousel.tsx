@@ -40,7 +40,7 @@ export async function Carousel() {
   
       carousels.forEach((ul) => {
         ul.style.animationDirection = isLeft ? 'reverse' : 'normal';
-        count = Math.max(count - 0.1, 1)
+        count = Math.max(count - 0.5, 1)
         ul.style.animationDuration = `${count}s`;
       });
   
