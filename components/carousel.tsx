@@ -1,66 +1,60 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 import { GridTileImage } from './grid/tile';
 import { Product } from 'lib/types';
-import styles from "./Carousel.module.css";
-import { useEffect, useRef } from 'react';
+import styles from './Carousel.module.css';
 import products from 'lib/products.json'
 
-function CarouselContent({ products }: { products: Product[] }) {
+export async function Carousel() {
+  const toFilterProducts = products;
+  const productsA = toFilterProducts.filter((product) => Number(product.id) >= 4);
+  if (!productsA || productsA.length === 0) return null;
+
+  const carouselProducts = [...productsA];
   const containerRef = useRef<HTMLSpanElement>(null);
-  const isScrollingRef = useRef(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const scrollWidth = container.scrollWidth;
-    const clientWidth = container.clientWidth;
-    const maxScroll = scrollWidth - clientWidth;
-    
-    // Since we have duplicated content, the halfway point is where we reset
-    const resetPoint = maxScroll / 2;
+    const carousels = container.querySelectorAll<HTMLElement>('ul');
 
-    // Handle manual scrolling
-    const handleScroll = () => {
-      isScrollingRef.current = true;
-      const currentScroll = container.scrollLeft;
-      
-      // If user scrolls past the reset point, jump back to beginning
-      if (currentScroll >= resetPoint) {
-        container.scrollLeft = 0;
-      } else {
-        // Keep track of scroll position for consistency
-      }
+    const resetDuration = () => {
+      carousels.forEach((ul) => {
+        ul.style.animationDuration = '20s';
+      });
     };
 
-    // Resume auto-scroll after manual scroll stops
-    let scrollTimeout: ReturnType<typeof setTimeout>;
-    const handleScrollEnd = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 1000); // Resume after 1 second of no scrolling
+    const handleScroll = (e: WheelEvent) => {
+      const isLeft = e.deltaY < 0 || e.deltaX < 0;
+      const isRight = e.deltaY > 0 || e.deltaX > 0;
+
+      carousels.forEach((ul) => {
+        ul.style.animationDirection = isLeft ? 'reverse' : 'normal';
+        ul.style.animationDuration = '5s';
+      });
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(resetDuration, 1); // 300ms without scroll = reset
     };
 
-    container.addEventListener('scroll', handleScroll);
-    container.addEventListener('scroll', handleScrollEnd);
-
+    window.addEventListener('wheel', handleScroll);
     return () => {
-      clearTimeout(scrollTimeout);
-      container.removeEventListener('scroll', handleScroll);
-      container.removeEventListener('scroll', handleScrollEnd);
+      window.removeEventListener('wheel', handleScroll);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [products]);
+  }, []);
 
   return (
-    <span 
+    <span
       ref={containerRef}
-      className={`${styles.a} w-[266.66666vw] md:w-[137vw] flex overflow-x-scroll gap-[8px] px-1 pb-6 pt-1`}
+      className={`${styles.a} w-[266.66666vw] md:w-[137vw] flex overflow-x-hidden gap-[8px] px-1 pb-6 pt-1`}
     >
       <ul className={`${styles.animateCarousel} flex w-full gap-[8px]`}>
-        {products.map((product, i) => (
+        {carouselProducts.map((product, i) => (
           <li
             key={`${product.id}${i}`}
             className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
@@ -71,7 +65,7 @@ function CarouselContent({ products }: { products: Product[] }) {
                 label={{
                   title: product.name,
                   amount: product.price,
-                  currencyCode: 'USD'
+                  currencyCode: 'USD',
                 }}
                 src={product.images[0] || '/placeholder-image.jpg'}
                 fill
@@ -82,7 +76,7 @@ function CarouselContent({ products }: { products: Product[] }) {
         ))}
       </ul>
       <ul className={`${styles.animateCarousel} flex w-full gap-[8px]`}>
-        {products.map((product, i) => (
+        {carouselProducts.map((product, i) => (
           <li
             key={`${product.id}${i}`}
             className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
@@ -93,7 +87,7 @@ function CarouselContent({ products }: { products: Product[] }) {
                 label={{
                   title: product.name,
                   amount: product.price,
-                  currencyCode: 'USD'
+                  currencyCode: 'USD',
                 }}
                 src={product.images[0] || '/placeholder-image.jpg'}
                 fill
@@ -105,12 +99,4 @@ function CarouselContent({ products }: { products: Product[] }) {
       </ul>
     </span>
   );
-}
-
-export async function Carousel() {
-  const toFilterProducts = products;
-  const productsA = toFilterProducts.filter(product => Number(product.id) >= 4);
-  if (!productsA || productsA.length === 0) return null;
-
-  return <CarouselContent products={productsA} />;
 }
