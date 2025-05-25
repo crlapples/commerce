@@ -19,12 +19,12 @@ export async function Carousel() {
   const carouselProducts = [...products];
 
   return (
-    <span className={`${styles.a} w-[137%] flex overflow-x-scroll px-1 pb-6 pt-1`}>
+    <span className={`${styles.a} w-[137vw] flex overflow-x-scroll gap-4 px-1 pb-6 pt-1`}>
       <ul className={`${styles.animateCarousel} flex w-full gap-4`}>
         {carouselProducts.map((product, i) => (
           <li
             key={`${product.id}${i}`}
-            className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
+            className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-[33.33333vw]"
           >
             <Link href={`/product/${product.id}`} className="relative h-full w-full">
               <GridTileImage
@@ -46,7 +46,7 @@ export async function Carousel() {
         {carouselProducts.map((product, i) => (
           <li
             key={`${product.id}${i}`}
-            className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-1/3"
+            className="relative aspect-square h-[30vh] max-h-[275px] w-2/3 max-w-[475px] flex-none md:w-[33.33333vw]"
           >
             <Link href={`/product/${product.id}`} className="relative h-full w-full">
               <GridTileImage
