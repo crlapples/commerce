@@ -12,7 +12,8 @@ async function getProductsFromJson(): Promise<Product[]> {
 }
 
 export async function Carousel() {
-  const products = await getProductsFromJson();
+  const toFilterProducts = await getProductsFromJson();
+  const products = toFilterProducts.filter(product => Number(product.id) < 4);
   console.log('Products:', products); // Debug to ensure products are loaded
   if (!products || products.length === 0) return null;
   const carouselProducts = [...products, ...products, ...products];
