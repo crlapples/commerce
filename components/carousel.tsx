@@ -43,7 +43,7 @@ export async function Carousel() {
             </li>
           ))}
         </ul>
-        <ul className={`${styles.animateCarousel} overflow-x-hidden flex w-full gap-[8px]`}>
+        <ul className={`overflow-x-hidden flex w-full gap-[8px]`}>
           {carouselProducts.map((product, i) => (
             <li
               key={`${product.id}${i}`}
