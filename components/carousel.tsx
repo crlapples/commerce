@@ -9,94 +9,110 @@ import './Carousel.module.css';
 
 function CarouselContent({ products }: { products: Product[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isScrollingRef = useRef(false);
+  const isManualScrollingRef = useRef(false);
   const animationRef = useRef<number>(0);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const scrollWidth = container.scrollWidth;
-    const clientWidth = container.clientWidth;
-    const maxScroll = scrollWidth - clientWidth;
-    
-    // Since we have duplicated content, the halfway point is where we reset
-    const resetPoint = maxScroll / 2;
+    // Wait for container to be properly rendered
+    setTimeout(() => {
+      const scrollWidth = container.scrollWidth;
+      const clientWidth = container.clientWidth;
+      const maxScroll = scrollWidth - clientWidth;
+      
+      // Since we have duplicated content, the halfway point is where we reset
+      const resetPoint = maxScroll / 2;
 
-    let scrollPosition = 0;
-    const scrollSpeed = 1.5; // Increased speed - pixels per frame
+      let scrollPosition = 0;
+      const scrollSpeed = 1; // pixels per frame
 
-    const animate = () => {
-      if (!isScrollingRef.current && container) {
-        scrollPosition += scrollSpeed;
-        
-        // Reset position when we reach the halfway point (end of first set)
-        if (scrollPosition >= resetPoint) {
-          scrollPosition = 0;
+      const animate = () => {
+        if (!isManualScrollingRef.current && container) {
+          scrollPosition += scrollSpeed;
+          
+          // Reset position when we reach the halfway point (end of first set)
+          if (scrollPosition >= resetPoint) {
+            scrollPosition = 0;
+          }
+          
+          container.scrollLeft = scrollPosition;
         }
         
-        container.scrollLeft = scrollPosition;
-      }
-      
+        animationRef.current = requestAnimationFrame(animate);
+      };
+
+      // Start animation
       animationRef.current = requestAnimationFrame(animate);
-    };
 
-    // Start animation
-    animationRef.current = requestAnimationFrame(animate);
+      // Handle manual scrolling
+      const handleScroll = () => {
+        // Only handle if this is actually user interaction
+        if (!isManualScrollingRef.current) {
+          isManualScrollingRef.current = true;
+        }
 
-    // Handle manual scrolling
-    const handleScroll = () => {
-      isScrollingRef.current = true;
-      const currentScroll = container.scrollLeft;
+        const currentScroll = container.scrollLeft;
+        
+        // Clear existing timeout
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+        
+        // If user scrolls forward past the reset point, jump back to beginning
+        if (currentScroll >= resetPoint) {
+          container.scrollLeft = 0;
+          scrollPosition = 0;
+        }
+        // If user scrolls backward past the beginning, jump to the end of first set
+        else if (currentScroll <= 0 && scrollPosition > 0) {
+          container.scrollLeft = resetPoint - 1;
+          scrollPosition = resetPoint - 1;
+        } else {
+          scrollPosition = currentScroll;
+        }
+
+        // Resume auto-scroll after manual scroll stops
+        scrollTimeoutRef.current = setTimeout(() => {
+          isManualScrollingRef.current = false;
+        }, 1500);
+      };
+
+      container.addEventListener('scroll', handleScroll, { passive: true });
       
-      // If user scrolls forward past the reset point, jump back to beginning
-      if (currentScroll >= resetPoint) {
-        container.scrollLeft = 0;
-        scrollPosition = 0;
-      }
-      // If user scrolls backward past the beginning, jump to the end of first set
-      else if (currentScroll <= 0) {
-        container.scrollLeft = resetPoint - 1;
-        scrollPosition = resetPoint - 1;
-      } else {
-        scrollPosition = currentScroll;
-      }
-    };
+      // Pause on hover
+      const handleMouseEnter = () => {
+        isManualScrollingRef.current = true;
+      };
+      
+      const handleMouseLeave = () => {
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+        scrollTimeoutRef.current = setTimeout(() => {
+          isManualScrollingRef.current = false;
+        }, 500);
+      };
 
-    // Resume auto-scroll after manual scroll stops
-    let scrollTimeout: NodeJS.Timeout;
-    const handleScrollEnd = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        isScrollingRef.current = false;
-      }, 1000); // Resume after 1 second of no scrolling
-    };
+      container.addEventListener('mouseenter', handleMouseEnter);
+      container.addEventListener('mouseleave', handleMouseLeave);
 
-    container.addEventListener('scroll', handleScroll);
-    container.addEventListener('scroll', handleScrollEnd);
-    
-    // Pause on hover
-    const handleMouseEnter = () => {
-      isScrollingRef.current = true;
-    };
-    
-    const handleMouseLeave = () => {
-      isScrollingRef.current = false;
-    };
+      // Cleanup function
+      return () => {
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+        container.removeEventListener('scroll', handleScroll);
+        container.removeEventListener('mouseenter', handleMouseEnter);
+        container.removeEventListener('mouseleave', handleMouseLeave);
+      };
+    }, 100);
 
-    container.addEventListener('mouseenter', handleMouseEnter);
-    container.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      clearTimeout(scrollTimeout);
-      container.removeEventListener('scroll', handleScroll);
-      container.removeEventListener('scroll', handleScrollEnd);
-      container.removeEventListener('mouseenter', handleMouseEnter);
-      container.removeEventListener('mouseleave', handleMouseLeave);
-    };
   }, [products]);
 
   return (
