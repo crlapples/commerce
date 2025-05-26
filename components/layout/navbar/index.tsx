@@ -17,7 +17,7 @@ const CartModal = dynamic(() => import('components/cart/modal'), {
 // Define SiteNameDiv as a regular component (no dynamic import)
 const SiteNameDiv = ({ siteName }: { siteName: string | undefined }) => (
   <div className="ml-2 flex-none text-sm font-medium uppercase lg:block">
-    {siteName || 'NAME OF STORE'} {/* Fallback to 'My Store' if undefined */}
+    {siteName} {/* Fallback to 'My Store' if undefined */}
   </div>
 );
 
