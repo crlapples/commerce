@@ -52,8 +52,8 @@ export function ProductDescription({
   // Define options with safe access
   const options = [
     {
-      id: 'primary',
-      name: 'Primary',
+      id: 'color',
+      name: 'Color',
       values: product.variant?.colors || [],
     },
     {
@@ -87,14 +87,14 @@ export function ProductDescription({
                         title={`${option.name} ${value}`}
                         onClick={() => {
                           // Always calculate colorIndex based on current or new color
-                          const newColor = option.id === 'primary' ? value : selectedVariant.color;
+                          const newColor = option.id === 'color' ? value : selectedVariant.color;
                           const colorIndex = product.variant?.colors?.indexOf(newColor as string) ?? 0;
 
                           const newVariant = {
                             ...selectedVariant,
                             [option.id]: value,
                             image:
-                              option.id === 'primary'
+                              option.id === 'color'
                                 ? product.images[colorIndex] || ''
                                 : selectedVariant.image,
                           };
@@ -105,7 +105,7 @@ export function ProductDescription({
                           'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
                           {
                             'cursor-pointer ring-2 ring-blue-600': isActive,
-                            'cursor-pointer ring-1 ring-transparent transition-[ring] duration-300 ease-in-out hover:ring-blue-600': !isActive,
+                            'cursor-pointer ring-1 transition-[ring] duration-100 ease-in-out hover:ring-blue-600': !isActive,
                           }
                         )}
                       >
