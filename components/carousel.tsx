@@ -38,7 +38,7 @@ export async function Carousel() {
                 src={product.images[0] || '/placeholder-image.jpg'}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-                imageClassName="ml-[25%] w-[75%]"
+                imageClassName="md:ml-[25%]"
               />
             </Link>
           </div>
