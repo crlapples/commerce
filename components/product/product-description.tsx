@@ -28,11 +28,9 @@ export function ProductDescription({
     image: product.images?.[0] || '', // Store image URL (string)
   });
 
-  const handleVariantChange = (newVariant: Variant, colorIndex?: number) => {
+  const handleVariantChange = (newVariant: Variant, colorIndex: number) => {
     setSelectedVariant(newVariant);
-    if (colorIndex !== undefined) {
-      updateImage(colorIndex.toString()); // Update 0-based index in context
-    }
+    updateImage(colorIndex.toString()); // Update 0-based index in context
     newVariant.color ? updateOption('color', newVariant.color) : updateOption('color', '');
     newVariant.size ? updateOption('size', newVariant.size) : updateOption('size', '');
 
@@ -44,9 +42,7 @@ export function ProductDescription({
     if (newVariant.size) {
       current.set('size', newVariant.size);
     }
-    if (colorIndex !== undefined) {
-      current.set('image', (colorIndex).toString()); // 1-based index for URL
-    }
+    current.set('image', (colorIndex).toString()); // 1-based index for URL
     const query = current.toString();
     router.replace(`?${query}`, { scroll: false });
 
@@ -56,8 +52,8 @@ export function ProductDescription({
   // Define options with safe access
   const options = [
     {
-      id: 'color',
-      name: 'Color',
+      id: 'primary',
+      name: 'Primary',
       values: product.variant?.colors || [],
     },
     {
@@ -86,18 +82,20 @@ export function ProductDescription({
 
                     return (
                       <button
-                        key={value}
                         type="button"
+                        key={value}
                         title={`${option.name} ${value}`}
                         onClick={() => {
-                          const colorIndex = option.id === 'color' ? product.variant?.colors?.indexOf(value) ?? 0 : undefined;
+                          // Always calculate colorIndex based on current or new color
+                          const newColor = option.id === 'primary' ? value : selectedVariant.color;
+                          const colorIndex = product.variant?.colors?.indexOf(newColor as string) ?? 0;
 
                           const newVariant = {
                             ...selectedVariant,
                             [option.id]: value,
                             image:
-                              option.id === 'color'
-                                ? product.images[colorIndex ?? 0] || product.images[0] || ''
+                              option.id === 'primary'
+                                ? product.images[colorIndex] || ''
                                 : selectedVariant.image,
                           };
 
