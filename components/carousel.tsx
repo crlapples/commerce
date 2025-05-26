@@ -19,95 +19,145 @@ export async function Carousel() {
   const carouselProducts = [...products];
 
   return (
-    <div className={`${styles.a} ${styles.animateCarousel} w-[1200vw] md:w-[548vw] flex gap-[20px]`}>
-      <ul className={`flex w-[290vw] md:w-[137vw] gap-[20px]`}>
-        {carouselProducts.map((product, i) => (
-          <li
-            key={`${product.id}${i}`}
-            className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
-          >
-            <Link href={`/product/${product.id}`} className="relative h-full w-full">
-              <GridTileImage
-                alt={product.name}
-                label={{
-                  title: product.name,
-                  amount: product.price,
-                  currencyCode: 'USD' // Assuming USD currency based on your previous examples
-                }}
-                src={product.images[0] || '/placeholder-image.jpg'}
-                fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <ul className={`flex w-[290vw] md:w-[137vw] gap-[20px]`}>
-        {carouselProducts.map((product, i) => (
-          <li
-            key={`${product.id}${i}`}
-            className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
-          >
-            <Link href={`/product/${product.id}`} className="relative h-full w-full">
-              <GridTileImage
-                alt={product.name}
-                label={{
-                  title: product.name,
-                  amount: product.price,
-                  currencyCode: 'USD' // Assuming USD currency based on your previous examples
-                }}
-                src={product.images[0] || '/placeholder-image.jpg'}
-                fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <ul className={`flex w-[290vw] md:w-[137vw] gap-[20px]`}>
-        {carouselProducts.map((product, i) => (
-          <li
-            key={`${product.id}${i}`}
-            className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
-          >
-            <Link href={`/product/${product.id}`} className="relative h-full w-full">
-              <GridTileImage
-                alt={product.name}
-                label={{
-                  title: product.name,
-                  amount: product.price,
-                  currencyCode: 'USD' // Assuming USD currency based on your previous examples
-                }}
-                src={product.images[0] || '/placeholder-image.jpg'}
-                fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <ul className={`flex w-[290vw] md:w-[137vw] gap-[20px]`}>
-        {carouselProducts.map((product, i) => (
-          <li
-            key={`${product.id}${i}`}
-            className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
-          >
-            <Link href={`/product/${product.id}`} className="relative h-full w-full">
-              <GridTileImage
-                alt={product.name}
-                label={{
-                  title: product.name,
-                  amount: product.price,
-                  currencyCode: 'USD' // Assuming USD currency based on your previous examples
-                }}
-                src={product.images[0] || '/placeholder-image.jpg'}
-                fill
-                sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-              />
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div className={`${styles.a} w-[1200vw] md:w-[548vw] flex gap-[15px]`}>
+      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex gap-[15px] px-1 pb-6 pt-1`}>
+        <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
+          {carouselProducts.map((product, i) => (
+            <li
+              key={`${product.id}${i}`}
+              className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
+            >
+              <Link href={`/product/${product.id}`} className="relative h-full w-full">
+                <GridTileImage
+                  alt={product.name}
+                  label={{
+                    title: product.name,
+                    amount: product.price,
+                    currencyCode: 'USD' // Assuming USD currency based on your previous examples
+                  }}
+                  src={product.images[0] || '/placeholder-image.jpg'}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
+          {carouselProducts.map((product, i) => (
+            <li
+              key={`${product.id}${i}`}
+              className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
+            >
+              <Link href={`/product/${product.id}`} className="relative h-full w-full">
+                <GridTileImage
+                  alt={product.name}
+                  label={{
+                    title: product.name,
+                    amount: product.price,
+                    currencyCode: 'USD' // Assuming USD currency based on your previous examples
+                  }}
+                  src={product.images[0] || '/placeholder-image.jpg'}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex gap-[15px] px-1 pb-6 pt-1`}>
+        <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
+          {carouselProducts.map((product, i) => (
+            <li
+              key={`${product.id}${i}`}
+              className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
+            >
+              <Link href={`/product/${product.id}`} className="relative h-full w-full">
+                <GridTileImage
+                  alt={product.name}
+                  label={{
+                    title: product.name,
+                    amount: product.price,
+                    currencyCode: 'USD' // Assuming USD currency based on your previous examples
+                  }}
+                  src={product.images[0] || '/placeholder-image.jpg'}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
+          {carouselProducts.map((product, i) => (
+            <li
+              key={`${product.id}${i}`}
+              className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
+            >
+              <Link href={`/product/${product.id}`} className="relative h-full w-full">
+                <GridTileImage
+                  alt={product.name}
+                  label={{
+                    title: product.name,
+                    amount: product.price,
+                    currencyCode: 'USD' // Assuming USD currency based on your previous examples
+                  }}
+                  src={product.images[0] || '/placeholder-image.jpg'}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex gap-[15px] px-1 pb-6 pt-1`}>
+        <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
+          {carouselProducts.map((product, i) => (
+            <li
+              key={`${product.id}${i}`}
+              className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
+            >
+              <Link href={`/product/${product.id}`} className="relative h-full w-full">
+                <GridTileImage
+                  alt={product.name}
+                  label={{
+                    title: product.name,
+                    amount: product.price,
+                    currencyCode: 'USD' // Assuming USD currency based on your previous examples
+                  }}
+                  src={product.images[0] || '/placeholder-image.jpg'}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
+          {carouselProducts.map((product, i) => (
+            <li
+              key={`${product.id}${i}`}
+              className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
+            >
+              <Link href={`/product/${product.id}`} className="relative h-full w-full">
+                <GridTileImage
+                  alt={product.name}
+                  label={{
+                    title: product.name,
+                    amount: product.price,
+                    currencyCode: 'USD' // Assuming USD currency based on your previous examples
+                  }}
+                  src={product.images[0] || '/placeholder-image.jpg'}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
