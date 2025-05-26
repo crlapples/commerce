@@ -7,6 +7,10 @@ import Price from 'components/price';
 import Prose from 'components/prose';
 import { Product, Variant } from 'lib/types';
 import { useProduct } from 'components/product/product-context';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+const router = useRouter();
+const searchParams = useSearchParams();
 
 export function ProductDescription({
   product,
@@ -72,22 +76,25 @@ export function ProductDescription({
                         type="button"
                         title={`${option.name} ${value}`}
                         onClick={() => {
-                          const imageIndex =
-                            option.id === 'color'
-                              ? (product.variant?.colors?.indexOf(value) ?? 0).toString()
-                              : selectedVariant.image;
+                          const colorIndex = product.variant?.colors?.indexOf(value) ?? 0;
+                        
+                          // Update URL query param
+                          const current = new URLSearchParams(Array.from(searchParams.entries()));
+                          current.set('image', (colorIndex + 1).toString()); // 1-based index
+                          const query = current.toString();
+                          router.replace(`?${query}`, { scroll: false });
+                        
                           const newVariant = {
                             ...selectedVariant,
                             [option.id]: value,
                             image:
                               option.id === 'color'
-                                ? product.images[product.variant?.colors?.indexOf(value) ?? 0] ||
-                                  product.images[0] ||
-                                  ''
+                                ? product.images[colorIndex] || product.images[0] || ''
                                 : selectedVariant.image,
                           };
-                          handleVariantChange(newVariant, option.id === 'color' ? imageIndex : undefined);
-                        }}
+                        
+                          handleVariantChange(newVariant, colorIndex.toString());
+                        }}                        
                         className={clsx(
                           'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
                           {

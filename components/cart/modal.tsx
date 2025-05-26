@@ -161,6 +161,12 @@ export default function CartModal() {
                               >
                                 <div className="flex flex-1 flex-col text-base">
                                   <span className="leading-tight">{product.name}</span>
+                                  {item.variant?.color && (
+                                    <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                      {item.variant.color}
+                                      {item.variant?.size && `, (${item.variant.size})`}
+                                    </p>
+                                  )}
                                 </div>
                               </Link>
                             </div>
