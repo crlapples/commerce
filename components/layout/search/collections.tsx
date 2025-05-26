@@ -8,8 +8,9 @@ import { Product } from 'lib/types';
 // Define explicit collections based on product categories
 const collections = [
   { title: 'All', path: '/search' },
+  { title: 'Figurines', path: '/search/figurines'},
+  { title: 'Clothing', path: '/search/clothing' },
   { title: 'Electronics', path: '/search/electronics' },
-  { title: 'Accessories', path: '/search/accessories' },
 ];
 
 export default function Collections() {

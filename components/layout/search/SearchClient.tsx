@@ -72,7 +72,7 @@ export default function SearchClient({
     // Map products to collections (since products.json lacks collection field)
     result = result.map(product => ({
       ...product,
-      collection: product.name.includes('Mouse') || product.name.includes('Keyboard') ? 'Electronics' : 'Accessories',
+      collection: product.name.includes('Figure') ? 'Electronics' : product.name.includes('T-Shirt') ? 'Clothing' : 'Electronics',
     }));
 
     if (query) {

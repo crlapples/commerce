@@ -27,7 +27,7 @@ const SITE_NAME = process.env.SITE_NAME || 'NAME OF STORE';
 export function Navbar() {
   const menu: Menu[] = [
     { title: 'All', path: '/search' },
-    { title: 'Shirts', path: '/search/shirts' },
+    { title: 'Figurines', path: '/search/figurines' },
   ];
 
   // Debugging: Log SITE_NAME to verify its value
