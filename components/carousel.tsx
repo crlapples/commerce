@@ -20,12 +20,12 @@ export async function Carousel() {
   const carouselProducts = [...products];
 
   return (
-    <div className={`${styles.scrollContainer}`}>
+    <div className={`${styles.scrollContainer} ${styles.animateCarousel} ${styles.a}`}>
       <div className={`${styles.carouselContent}`}>
         {[...carouselProducts, ...carouselProducts, ...carouselProducts].map((product, i) => (
           <div
             key={`${product.id}-${i}`}
-            className="relative aspect-square h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
+            className="relative aspect-square mx-[8px] h-[30vh] max-h-[275px] w-[66.66666vw] max-w-[475px] flex-none md:w-[33.33333vw]"
           >
             <Link href={`/product/${product.id}`} className="relative h-full w-full">
               <GridTileImage
