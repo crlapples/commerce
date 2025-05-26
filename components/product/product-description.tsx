@@ -45,7 +45,7 @@ export function ProductDescription({
       current.set('size', newVariant.size);
     }
     if (colorIndex !== undefined) {
-      current.set('image', (colorIndex + 1).toString()); // 1-based index for URL
+      current.set('image', (colorIndex).toString()); // 1-based index for URL
     }
     const query = current.toString();
     router.replace(`?${query}`, { scroll: false });
