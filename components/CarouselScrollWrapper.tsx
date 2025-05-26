@@ -37,7 +37,7 @@ export default function CarouselScrollWrapper({ children }: { children: React.Re
   }, []);
 
   return (
-    <div ref={scrollRef} className={styles.scrollContainer}>
+    <div ref={scrollRef} className={`${styles.scrollContainer} ${styles.a}`}>
       <div className={styles.carouselContent}>
         {children}
         {children}

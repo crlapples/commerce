@@ -20,7 +20,7 @@ export async function Carousel() {
   const carouselProducts = [...products];
 
   return (
-    <div className={`${styles.scrollContainer} ${styles.animateCarousel} ${styles.a}`}>
+    <div className={`${styles.scrollContainer} ${styles.animateCarousel}`}>
       <div className={`${styles.carouselContent}`}>
         {[...carouselProducts, ...carouselProducts, ...carouselProducts].map((product, i) => (
           <div
