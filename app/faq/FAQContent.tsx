@@ -15,17 +15,17 @@ export default function FAQContent() {
     {
       question: 'How do I place an order?',
       answer:
-        'To place an order, browse our website [Your Website URL], select your desired products, add them to your cart, and proceed to checkout. You’ll need to provide your shipping and payment information. Once confirmed, you’ll receive an order confirmation email.',
+        'To place an order, browse our website https://ingameshop.vercel.app, select your desired products, add them to your cart, and proceed to checkout. You’ll need to provide your shipping and payment information. Once confirmed, you’ll receive an order confirmation email.',
     },
     {
       question: 'What payment methods do you accept?',
       answer:
-        'We accept payments in [Your Currency, e.g., USD] via major credit cards, PayPal, and other secure payment methods available at checkout. All transactions are processed securely.',
+        'We accept payments in USD via major credit cards, PayPal, and other secure payment methods available at checkout. All transactions are processed securely.',
     },
     {
       question: 'How long will my order take to ship?',
       answer:
-        'Orders are typically processed within [X-Y] business days. Shipping times depend on your location and chosen method: [Standard, Expedited] via [USPS, FedEx]. Domestic delivery takes [X-Y] days, and international delivery takes [X-Y] days. Tracking is provided.',
+        'Orders are typically processed within 1-3 business days. Shipping times depend on your location and chosen method: Standard or Expedited via USPS, FedEx, or UPS. Domestic delivery takes 1-14 days, and international delivery takes 7-60 days. Tracking is provided.',
     },
     {
       question: 'What is your return policy?',
@@ -35,7 +35,7 @@ export default function FAQContent() {
     {
       question: 'Do you ship internationally?',
       answer:
-        'Yes, we ship to [list countries or "select countries"]. International customers are responsible for customs fees, duties, or taxes. Shipping costs and estimated delivery times are calculated at checkout.',
+        'Yes, we ship to any country. International customers are responsible for customs fees, duties, or taxes. Shipping costs and estimated delivery times are calculated at checkout.',
     },
     {
       question: 'How can I contact customer support?',

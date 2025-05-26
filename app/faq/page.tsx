@@ -3,8 +3,8 @@ import FAQContent from './FAQContent';
 import Footer from 'components/layout/footer';
 
 export const metadata: Metadata = {
-  title: 'FAQ - [Your Company Name]',
-  description: 'Frequently Asked Questions for [Your Company Name]',
+  title: 'FAQ - In-Game Shop',
+  description: 'Frequently Asked Questions for In-Game Shop',
 };
 
 export default function FAQ() {
