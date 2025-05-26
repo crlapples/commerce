@@ -72,7 +72,7 @@ export default function CartModal() {
   }
 
   return (
-    <PayPalScriptProvider options={{ clientId: `${paypalClientId}`, currency: "USD", intent: "capture" }}>
+    <PayPalScriptProvider options={{ clientId: `${paypalClientId}`, currency: "USD", intent: "capture", 'data-sdk-url': 'https://www.sandbox.paypal.com/sdk/js', }}>
       <button aria-label="Open cart" onClick={openCart} className="hover:cursor-pointer">
         <OpenCart quantity={cart?.totalQuantity} />
       </button>
