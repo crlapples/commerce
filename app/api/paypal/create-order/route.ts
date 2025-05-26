@@ -2,8 +2,8 @@ import paypal from '@paypal/checkout-server-sdk';
 import { NextResponse } from 'next/server';
 
 function createClient() {
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+  const clientId = process.env.NEXT_PUBLIC_SANDBOX_CLIENT_ID;
+  const clientSecret = process.env.SANDBOX_CLIENT_SECRET;
 
   console.log('PayPal Client ID (server):', clientId);
   console.log('PayPal Client Secret length (server):', clientSecret?.length || 'Missing');
@@ -20,7 +20,7 @@ function createClient() {
   const expectedAuth = 'QWRHMFNiRmQ0MDB5aDBzdDE4Y3NrWDdZSWgtTEQyaHEzZXNhaDBPZjdieFBRSjVPYUp0YVMtY1RNQTk2RGNKY0l2dndRR3zQbGN1amlYSEI6RUtHT19QXzVJcmlUQXFndFZaVWtzLTBVemQtd01BUDMxUHFQTWxUbkh1cUptODF3TlhRUzlOa3poWVZXNFpkR1Q5R2laNmlTVVhnbF9XdW0=';
   console.log('Base64 matches curl:', auth === expectedAuth);
 
-  const environment = new paypal.core.LiveEnvironment(clientId, clientSecret);
+  const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
   const client = new paypal.core.PayPalHttpClient(environment);
 
   console.log('PayPal API endpoint:', environment.baseUrl);
