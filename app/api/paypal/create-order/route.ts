@@ -20,7 +20,7 @@ function createClient() {
   const expectedAuth = 'QWRHMFNiRmQ0MDB5aDBzdDE4Y3NrWDdZSWgtTEQyaHEzZXNhaDBPZjdieFBRSjVPYUp0YVMtY1RNQTk2RGNKY0l2dndRR3zQbGN1amlYSEI6RUtHT19QXzVJcmlUQXFndFZaVWtzLTBVemQtd01BUDMxUHFQTWxUbkh1cUptODF3TlhRUzlOa3poWVZXNFpkR1Q5R2laNmlTVVhnbF9XdW0=';
   console.log('Base64 matches curl:', auth === expectedAuth);
 
-  const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
+  const environment = new paypal.core.LiveEnvironment(clientId, clientSecret);
   const client = new paypal.core.PayPalHttpClient(environment);
 
   console.log('PayPal API endpoint:', environment.baseUrl);
