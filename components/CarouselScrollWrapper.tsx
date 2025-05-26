@@ -5,32 +5,34 @@ import styles from './Carousel.module.css';
 
 export default function CarouselScrollWrapper({ children }: { children: React.ReactNode }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
 
-    const itemWidth = el.scrollWidth / 3; // Adjust if you clone more/less
-    const originalScrollLeft = itemWidth;
+    let speed = 0.5; // Adjust scroll speed as needed
 
-    // Jump to the middle (start of original items)
-    el.scrollLeft = originalScrollLeft;
+    const step = () => {
+      if (!el) return;
 
-    const handleScroll = () => {
-      const maxScrollLeft = el.scrollWidth - el.clientWidth;
-      const minScrollLeft = 0;
+      el.scrollLeft += speed;
 
-      if (el.scrollLeft <= 0) {
-        // Jump to original content from the start
-        el.scrollLeft = originalScrollLeft;
-      } else if (el.scrollLeft >= maxScrollLeft - itemWidth) {
-        // Jump to original content from the end
-        el.scrollLeft = originalScrollLeft;
+      // Reset to start of original content seamlessly
+      if (el.scrollLeft >= el.scrollWidth / 2) {
+        el.scrollLeft = el.scrollLeft - el.scrollWidth / 2;
       }
+
+      animationRef.current = requestAnimationFrame(step);
     };
 
-    el.addEventListener('scroll', handleScroll);
-    return () => el.removeEventListener('scroll', handleScroll);
+    animationRef.current = requestAnimationFrame(step);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
   }, []);
 
   return (

@@ -28,18 +28,21 @@
   }
 
   .scrollContainer {
-    overflow-x: auto;
+    overflow-x: scroll;
     overflow-y: hidden;
-    display: flex;
-    width: 100%;
-    padding-bottom: 1rem;
-    scroll-behavior: smooth;
+    white-space: nowrap;
+    scroll-behavior: auto; /* important: no smooth snapping */
+    -ms-overflow-style: none; /* hide scrollbar IE */
+    scrollbar-width: none;    /* hide scrollbar Firefox */
   }
   
-  /* Optional styling */
-  .carouselContent {
-    display: flex;
-    gap: 20px;
+  .scrollContainer::-webkit-scrollbar {
+    display: none; /* hide scrollbar Chrome/Safari */
   }
+  
+  .carouselContent {
+    display: inline-flex;
+  }
+  
   
   

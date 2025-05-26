@@ -19,8 +19,8 @@ export async function Carousel() {
   const carouselProducts = [...products];
 
   return (
-    <div className={`${styles.a} w-[1200vw] md:w-[548vw] flex gap-[15px]`}>
-      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex gap-[15px] px-1 pb-6 pt-1`}>
+    <div className={`${styles.a} w-[1200vw] md:w-[548vw] flex`}>
+      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex mx-[15px] px-1 pb-6 pt-1`}>
         <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
           {carouselProducts.map((product, i) => (
             <li
@@ -66,7 +66,7 @@ export async function Carousel() {
           ))}
         </ul>
       </div>
-      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex gap-[15px] px-1 pb-6 pt-1`}>
+      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex mx-[15px] px-1 pb-6 pt-1`}>
         <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
           {carouselProducts.map((product, i) => (
             <li
@@ -112,7 +112,7 @@ export async function Carousel() {
           ))}
         </ul>
       </div>
-      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex gap-[15px] px-1 pb-6 pt-1`}>
+      <div className={`${styles.animateCarousel} w-[580vw] md:w-[274vw] flex mx-[15px] px-1 pb-6 pt-1`}>
         <ul className={`flex w-[290vw] md:w-[137vw] gap-[15px]`}>
           {carouselProducts.map((product, i) => (
             <li
