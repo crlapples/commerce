@@ -1,41 +1,34 @@
 'use client';
 
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import styles from './Carousel.module.css';
 
 export default function CarouselScrollWrapper({ children }: { children: React.ReactNode }) {
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [applyTransform, setApplyTransform] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
+    const el = scrollRef.current;
+    if (!el) return;
 
     const handleScroll = () => {
-      const scrollLeft = container.scrollLeft;
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      const scrollPercentage = scrollLeft / maxScroll;
+      const maxScrollLeft = el.scrollWidth - el.clientWidth;
+      const maxAllowedScroll = maxScrollLeft * 0.25;
 
-      // Enable transform only if scrolled between 0% and 25%
-      if (scrollPercentage <= 0.25) {
-        setApplyTransform(true);
-      } else {
-        setApplyTransform(false);
+      // Clamp scroll to 0–25%
+      if (el.scrollLeft > maxAllowedScroll) {
+        el.scrollLeft = maxAllowedScroll;
+      } else if (el.scrollLeft < 0) {
+        el.scrollLeft = 0;
       }
     };
 
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
+    el.addEventListener('scroll', handleScroll);
+    return () => el.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <div
-      ref={scrollContainerRef}
-      className={`${styles.scrollContainer}`}
-    >
-      <div className={`${applyTransform ? styles.translatedFirstDiv : ''}`}>
-        {children}
-      </div>
+    <div ref={scrollRef} className={styles.scrollContainer}>
+      <div className={styles.carouselContent}>{children}</div>
     </div>
   );
 }
