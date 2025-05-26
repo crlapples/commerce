@@ -10,15 +10,22 @@ export default function CarouselScrollWrapper({ children }: { children: React.Re
     const el = scrollRef.current;
     if (!el) return;
 
+    const itemWidth = el.scrollWidth / 3; // Adjust if you clone more/less
+    const originalScrollLeft = itemWidth;
+
+    // Jump to the middle (start of original items)
+    el.scrollLeft = originalScrollLeft;
+
     const handleScroll = () => {
       const maxScrollLeft = el.scrollWidth - el.clientWidth;
-      const maxAllowedScroll = maxScrollLeft * 0.25;
+      const minScrollLeft = 0;
 
-      // Clamp scroll to 0–25%
-      if (el.scrollLeft > maxAllowedScroll) {
-        el.scrollLeft = maxAllowedScroll;
-      } else if (el.scrollLeft < 0) {
-        el.scrollLeft = 0;
+      if (el.scrollLeft <= 0) {
+        // Jump to original content from the start
+        el.scrollLeft = originalScrollLeft;
+      } else if (el.scrollLeft >= maxScrollLeft - itemWidth) {
+        // Jump to original content from the end
+        el.scrollLeft = originalScrollLeft;
       }
     };
 
@@ -28,7 +35,9 @@ export default function CarouselScrollWrapper({ children }: { children: React.Re
 
   return (
     <div ref={scrollRef} className={styles.scrollContainer}>
-      <div className={styles.carouselContent}>{children}</div>
+      <div className={styles.carouselContent}>
+        {children}
+      </div>
     </div>
   );
 }
