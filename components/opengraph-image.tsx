@@ -25,7 +25,7 @@ export default async function OpengraphImage(
       <div tw="flex h-full w-full flex-col items-center justify-center bg-black">
         <div tw="flex flex-none items-center justify-center border border-neutral-700 h-[160px] w-[160px] rounded-3xl">
           <img
-            src='/ingameshop1.png' // Replace with the URL of your desired preview image
+            src='https://ingameshop.vercel.app/ingameshop1.png' // Replace with the URL of your desired preview image
             width={1200} // Recommended width for OpenGraph images
             height={630} // Recommended height for OpenGraph images
             alt='Ecommerce Store Preview Image' />
