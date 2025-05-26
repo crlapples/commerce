@@ -5,39 +5,42 @@ import styles from './Carousel.module.css';
 
 export default function CarouselScrollWrapper({ children }: { children: React.ReactNode }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
 
-    let speed = 0.5; // Adjust scroll speed as needed
+    // Delay until content is measured
+    const handle = requestAnimationFrame(() => {
+      const itemWidth = el.scrollWidth / 3;
+      el.scrollLeft = itemWidth;
+    });
 
-    const step = () => {
+    const handleScroll = () => {
       if (!el) return;
+      const itemWidth = el.scrollWidth / 3;
 
-      el.scrollLeft += speed;
-
-      // Reset to start of original content seamlessly
-      if (el.scrollLeft >= el.scrollWidth / 2) {
-        el.scrollLeft = el.scrollLeft - el.scrollWidth / 2;
+      if (el.scrollLeft <= itemWidth * 0.1) {
+        // Too far left, reset to middle
+        el.scrollLeft += itemWidth;
+      } else if (el.scrollLeft >= itemWidth * 1.9) {
+        // Too far right, reset to middle
+        el.scrollLeft -= itemWidth;
       }
-
-      animationRef.current = requestAnimationFrame(step);
     };
 
-    animationRef.current = requestAnimationFrame(step);
-
+    el.addEventListener('scroll', handleScroll);
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      cancelAnimationFrame(handle);
+      el.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   return (
     <div ref={scrollRef} className={styles.scrollContainer}>
       <div className={styles.carouselContent}>
+        {children}
+        {children}
         {children}
       </div>
     </div>
