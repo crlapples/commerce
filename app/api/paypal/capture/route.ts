@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import paypal from '@paypal/checkout-server-sdk';
 
 // Configure PayPal environment
-const clientId = process.env.NEXT_PUBLIC_SANDBOX_CLIENT_ID!;
-const clientSecret = process.env.SANDBOX_CLIENT_SECRET!;
+const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!;
+const clientSecret = process.env.PAYPAL_CLIENT_SECRET!;
 
-const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
+const environment = new paypal.core.LiveEnvironment(clientId, clientSecret);
 const client = new paypal.core.PayPalHttpClient(environment);
 
 export async function POST(req: NextRequest) {

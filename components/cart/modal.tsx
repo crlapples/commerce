@@ -19,7 +19,7 @@ import products from 'lib/products.json'
 type PayPalButtonColor = 'black' | 'white' | 'gold' | 'blue' | 'silver';
 
 // Ensure PAYPAL_CLIENT_ID is set
-const paypalClientId = process.env.NEXT_PUBLIC_SANDBOX_CLIENT_ID;
+const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 
 if (process.env.NODE_ENV !== 'production' && !paypalClientId) {
   throw new Error('PAYPAL_CLIENT_ID environment variable is not set.');
