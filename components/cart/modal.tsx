@@ -19,7 +19,7 @@ import products from 'lib/products.json'
 type PayPalButtonColor = 'black' | 'white' | 'gold' | 'blue' | 'silver';
 
 // Ensure PAYPAL_CLIENT_ID is set
-const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+const paypalClientId = process.env.NEXT_PUBLIC_SANDBOX_CLIENT_ID;
 
 if (process.env.NODE_ENV !== 'production' && !paypalClientId) {
   throw new Error('PAYPAL_CLIENT_ID environment variable is not set.');
@@ -44,13 +44,17 @@ export default function CartModal() {
   const [colorScheme, setColorScheme] = useState<PayPalButtonColor>('white');
   
   useEffect(() => {
+    const isDarkMode = window.matchMedia && 
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setColorScheme(isDarkMode ? 'blue' : 'white');
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setColorScheme(mediaQuery.matches ? 'blue' : 'white');
     const handleChange = (e: MediaQueryListEvent) => {
       setColorScheme(e.matches ? 'blue' : 'white');
     };
     mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -72,7 +76,7 @@ export default function CartModal() {
   }
 
   return (
-    <PayPalScriptProvider options={{ clientId: `${paypalClientId}`, currency: "USD", intent: "capture", 'data-sdk-url': 'https://www.sandbox.paypal.com/sdk/js', }}>
+    <PayPalScriptProvider options={{ clientId: `${paypalClientId}`, currency: "USD", intent: "capture" }}>
       <button aria-label="Open cart" onClick={openCart} className="hover:cursor-pointer">
         <OpenCart quantity={cart?.totalQuantity} />
       </button>
