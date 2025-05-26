@@ -26,3 +26,19 @@
     animation: carousel 45s linear infinite;
     will-change: transform;
   }
+
+  .scrollContainer {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    display: flex;
+    width: 100%;
+    padding-bottom: 1rem;
+  }
+  
+  /* Optional: Smooth fade or transformation */
+  .translatedFirstDiv > div:first-child {
+    transform: translateX(-5%);
+    transition: transform 0.3s ease;
+  }
+  
