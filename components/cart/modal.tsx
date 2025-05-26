@@ -44,22 +44,14 @@ export default function CartModal() {
   const [colorScheme, setColorScheme] = useState<PayPalButtonColor>('white');
   
   useEffect(() => {
-    // Check if the user prefers dark mode
     const isDarkMode = window.matchMedia && 
       window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Set initial color scheme
     setColorScheme(isDarkMode ? 'blue' : 'white');
-    
-    // Listen for changes in color scheme preference
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       setColorScheme(e.matches ? 'blue' : 'white');
     };
-    
     mediaQuery.addEventListener('change', handleChange);
-    
-    // Clean up
     return () => {
       mediaQuery.removeEventListener('change', handleChange);
     };
@@ -135,6 +127,15 @@ export default function CartModal() {
                         new URLSearchParams(item.variant?.color ? { color: item.variant.color } : {})
                       );
 
+                      // Build variant text for display
+                      const variantText = [];
+                      if (item.variant?.color) {
+                        variantText.push(`Color: ${item.variant.color}`);
+                      }
+                      if (item.variant?.size) {
+                        variantText.push(`Size: ${item.variant.size}`);
+                      }
+
                       return (
                         <li
                           key={`${item.productId}-${JSON.stringify(item.variant)}-${i}`}
@@ -145,7 +146,7 @@ export default function CartModal() {
                               <DeleteItemButton item={item} optimisticUpdate={updateCartItem} />
                             </div>
                             <div className="flex flex-row">
-                              <div className="relative h-fit py-3 overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+                              <div className="relative h-fit overflow-hidden rounded-md border border-neutral-300 bg-neutral-300 dark:border-neutral-700 dark:bg-neutral-900">
                                 <Image
                                   className="object-cover"
                                   width={64}
@@ -161,10 +162,9 @@ export default function CartModal() {
                               >
                                 <div className="flex flex-1 flex-col text-base">
                                   <span className="leading-tight">{product.name}</span>
-                                  {item.variant?.color && (
+                                  {variantText.length > 0 && (
                                     <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                      {item.variant.color}
-                                      {item.variant?.size && `, (${item.variant.size})`}
+                                      {variantText.join(', ')}
                                     </p>
                                   )}
                                 </div>
@@ -234,10 +234,9 @@ export default function CartModal() {
                             .map((item) => {
                               const product = products.find((p) => p.id === item.productId);
                               if (!product) return null;
-                              // Format variant details for description
                               const variantDescription = [
-                                item.variant?.color ? `Color: ${item.variant.color}` : '',
-                                item.variant?.size ? `Size: ${item.variant.size}` : ''
+                                item.variant?.color ? `${item.variant.color}` : '',
+                                item.variant?.size ? `${item.variant.size}` : ''
                               ]
                                 .filter(Boolean)
                                 .join(', ');
@@ -250,7 +249,7 @@ export default function CartModal() {
                                   value: Number(product.price).toFixed(2)
                                 },
                                 quantity: item.quantity.toString(),
-                                custom_id: item.variant?.image || undefined // Store image URL in custom_id
+                                custom_id: item.variant?.image || undefined
                               };
                             })
                             .filter((item): item is NonNullable<typeof item> => item !== null);
@@ -260,7 +259,6 @@ export default function CartModal() {
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                               cartItems: orderItems,
-                              // Include total for validation
                               total: Number(cart.totalPrice).toFixed(2)
                             })
                           });

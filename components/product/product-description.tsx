@@ -9,9 +9,6 @@ import { Product, Variant } from 'lib/types';
 import { useProduct } from 'components/product/product-context';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const router = useRouter();
-const searchParams = useSearchParams();
-
 export function ProductDescription({
   product,
   onVariantChange,
@@ -20,22 +17,39 @@ export function ProductDescription({
   onVariantChange?: (variant: Variant) => void;
 }) {
   const { updateImage, updateOption } = useProduct();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Safely initialize selectedVariant with proper fallbacks
+  // Initialize selectedVariant with proper fallbacks
   const [selectedVariant, setSelectedVariant] = useState<Variant>({
     id: product.id,
     color: product.variant?.colors?.[0] || '',
     size: product.variant?.sizes?.[0] || '',
-    image: product.images?.[0] || '',
+    image: product.images?.[0] || '', // Store image URL (string)
   });
 
-  const handleVariantChange = (newVariant: Variant, imageIndex?: string) => {
+  const handleVariantChange = (newVariant: Variant, colorIndex?: number) => {
     setSelectedVariant(newVariant);
-    if (imageIndex !== undefined) {
-      updateImage(imageIndex); // Update the image index in the context
+    if (colorIndex !== undefined) {
+      updateImage(colorIndex.toString()); // Update 0-based index in context
     }
-    newVariant.color ? updateOption('color', newVariant.color) : updateOption('color', ''); // Update the color in the context
-    newVariant.size ? updateOption('size', newVariant.size) : updateOption('size', ''); // Update the size in the context
+    newVariant.color ? updateOption('color', newVariant.color) : updateOption('color', '');
+    newVariant.size ? updateOption('size', newVariant.size) : updateOption('size', '');
+
+    // Update URL params
+    const current = new URLSearchParams();
+    if (newVariant.color) {
+      current.set('color', newVariant.color);
+    }
+    if (newVariant.size) {
+      current.set('size', newVariant.size);
+    }
+    if (colorIndex !== undefined) {
+      current.set('image', (colorIndex + 1).toString()); // 1-based index for URL
+    }
+    const query = current.toString();
+    router.replace(`?${query}`, { scroll: false });
+
     onVariantChange?.(newVariant);
   };
 
@@ -76,25 +90,19 @@ export function ProductDescription({
                         type="button"
                         title={`${option.name} ${value}`}
                         onClick={() => {
-                          const colorIndex = product.variant?.colors?.indexOf(value) ?? 0;
-                        
-                          // Update URL query param
-                          const current = new URLSearchParams(Array.from(searchParams.entries()));
-                          current.set('image', (colorIndex + 1).toString()); // 1-based index
-                          const query = current.toString();
-                          router.replace(`?${query}`, { scroll: false });
-                        
+                          const colorIndex = option.id === 'color' ? product.variant?.colors?.indexOf(value) ?? 0 : undefined;
+
                           const newVariant = {
                             ...selectedVariant,
                             [option.id]: value,
                             image:
                               option.id === 'color'
-                                ? product.images[colorIndex] || product.images[0] || ''
+                                ? product.images[colorIndex ?? 0] || product.images[0] || ''
                                 : selectedVariant.image,
                           };
-                        
-                          handleVariantChange(newVariant, colorIndex.toString());
-                        }}                        
+
+                          handleVariantChange(newVariant, colorIndex);
+                        }}
                         className={clsx(
                           'flex min-w-[48px] items-center justify-center rounded-full border bg-neutral-100 px-2 py-1 text-sm dark:border-neutral-800 dark:bg-neutral-900',
                           {
