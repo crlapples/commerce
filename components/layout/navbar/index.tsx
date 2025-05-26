@@ -22,7 +22,7 @@ const SiteNameDiv = ({ siteName }: { siteName: string | undefined }) => (
 );
 
 // Use environment variable with fallback
-const SITE_NAME = process.env.SITE_NAME;
+const SITE_NAME = process.env.SITE_NAME || "In-Game Shop";
 
 export function Navbar() {
   const menu: Menu[] = [
