@@ -44,17 +44,13 @@ export default function CartModal() {
   const [colorScheme, setColorScheme] = useState<PayPalButtonColor>('white');
   
   useEffect(() => {
-    const isDarkMode = window.matchMedia && 
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setColorScheme(isDarkMode ? 'blue' : 'white');
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setColorScheme(mediaQuery.matches ? 'blue' : 'white');
     const handleChange = (e: MediaQueryListEvent) => {
       setColorScheme(e.matches ? 'blue' : 'white');
     };
     mediaQuery.addEventListener('change', handleChange);
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   useEffect(() => {
