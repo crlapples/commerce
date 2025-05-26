@@ -23,6 +23,6 @@
   }
 
   .animateCarousel {
-    animation: carousel 30s linear infinite;
+    animation: carousel 45s linear infinite;
     will-change: transform;
   }
